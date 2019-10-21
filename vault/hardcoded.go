@@ -1,4 +1,4 @@
-package main
+package vault
 
 import (
 	"bytes"
@@ -20,14 +20,14 @@ type authToken struct {
 	Token string `json:"auth"`
 }
 
-func main() {
+func main2() {
 	configFile := "C:/secret/config.yaml"
+
 	cfg, err := getConfig(configFile)
 	if err != nil {
 		log.Println("while getting configuration: ", err)
 	}
 
-	gitToken := loginToken{cfg.LoginToken}
 	address := cfg.VaultAddr
 	loginPath := "auth/github/login"
 	version := "/v1/"
@@ -54,7 +54,7 @@ func main() {
 		Transport: transport,
 	}
 
-	jsonStr, err := json.Marshal(gitToken)
+	jsonStr, err := json.Marshal(cfg.LoginToken)
 	if err != nil {
 		log.Println("while marshaling token: ", err)
 	}
