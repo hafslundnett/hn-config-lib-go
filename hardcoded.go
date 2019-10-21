@@ -8,6 +8,8 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+
+	"golang.org/x/net/http2"
 )
 
 type loginToken struct {
@@ -25,16 +27,32 @@ func main() {
 		log.Println("while getting configuration: ", err)
 	}
 
-	gitToken := loginToken{cfg.GitToken}
+	gitToken := loginToken{cfg.LoginToken}
 	address := cfg.VaultAddr
-	path := "auth/github/login"
+	loginPath := "auth/github/login"
 	version := "/v1/"
 
-	// TODO: This is insecure; use only in dev environments.
-	tr := &http.Transport{
-		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+	rootCAs, err := RootCAs(cfg.CaCert)
+	if err != nil {
+		log.Println("while getting CA Cert")
 	}
-	client := &http.Client{Transport: tr}
+
+	tlsClientConfig := &tls.Config{
+		MinVersion: tls.VersionTLS12,
+		RootCAs:    rootCAs,
+	}
+
+	transport := &http.Transport{
+		TLSClientConfig: tlsClientConfig,
+	}
+
+	if err := http2.ConfigureTransport(transport); err != nil {
+		log.Println("while configuring http2: ", err)
+	}
+
+	client := &http.Client{
+		Transport: transport,
+	}
 
 	jsonStr, err := json.Marshal(gitToken)
 	if err != nil {
@@ -42,7 +60,7 @@ func main() {
 	}
 
 	body := bytes.NewBuffer(jsonStr)
-	url := address + version + path
+	url := address + version + loginPath
 
 	req, err := http.NewRequest("POST", url, body)
 	if err != nil {
