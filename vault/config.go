@@ -7,21 +7,25 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
-type config struct {
-	LoginToken string `yaml:"token"`
-	VaultAddr  string `yaml:"vault_addr"`
-	CaCert     string `yaml:"cert"`
+//Config explanation
+type Config struct {
+	Login     string `yaml:"login_token"`
+	VaultAddr string `yaml:"vault_addr"`
+	CaCert    string `yaml:"cert"`
 }
 
-func getConfig(configFile string) (config, error) {
-	bytes, err := ioutil.ReadFile(configFile)
+//NewConfig explanation
+func NewConfig(configFile string) (Config, error) {
+	cfg := Config{}
+
+	bs, err := ioutil.ReadFile(configFile)
 	if err != nil {
-		return config{}, errors.Wrap(err, "while reading configuration file")
+		return cfg, errors.Wrap(err, "while reading configuration file")
 	}
 
-	var cfg config
-	if err := yaml.Unmarshal(bytes, &cfg); err != nil {
-		return config{}, errors.Wrap(err, "while to parsing configuration file")
+	err = yaml.Unmarshal(bs, &cfg)
+	if err != nil {
+		return cfg, errors.Wrap(err, "while to parsing configuration file")
 	}
 
 	return cfg, nil
