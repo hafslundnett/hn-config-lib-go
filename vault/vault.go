@@ -1,39 +1,27 @@
 package vault
 
-import (
-	"net/http"
-
-	"github.com/pkg/errors"
-)
-
-//Vault explanation
+//Vault contains all information needed to get and interact with Vault secrets, after initial configuration.
 type Vault struct {
 	Cfg    Config
-	Client *http.Client
-	Token  VaultToken
+	Client Client
+	Token  Token
 }
 
-//NewVault explanation
-func NewVault(cfgFile string) (*Vault, error) {
-	cfg, err := NewConfig(cfgFile)
-	if err != nil {
-		return nil, errors.Wrapf(err, "while getting configuration: ")
+//New initiaizes a new Vault. It reads configuration information from the provided file, and populates a new Vault struct
+//with the information needed to interact with secrets.
+func New(cfgFile string) (*Vault, error) {
+	vault := new(Vault)
+
+	if err := vault.NewConfig(cfgFile); err != nil {
+		return vault, err
 	}
 
-	client, err := MakeClient(cfg)
-	if err != nil {
-		return nil, errors.Wrapf(err, "while making client")
+	if err := vault.NewClient(); err != nil {
+		return vault, err
 	}
 
-	token, err := Authenticate(cfg, client)
-	if err != nil {
-		return nil, errors.Wrapf(err, "while : ")
-	}
-
-	vault := &Vault{
-		Cfg:    cfg,
-		Client: client,
-		Token:  token,
+	if err := vault.Authenticate(); err != nil {
+		return vault, err
 	}
 
 	return vault, nil

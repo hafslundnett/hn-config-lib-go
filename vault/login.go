@@ -18,7 +18,7 @@ func loginBuffer(login string) (*bytes.Buffer, error) {
 
 	js, err := json.Marshal(lt)
 	if err != nil {
-		return nil, errors.Wrapf(err, "while marshaling token %s", lt.Token)
+		return nil, errors.Wrapf(err, "while marshaling token")
 	}
 
 	return bytes.NewBuffer(js), nil

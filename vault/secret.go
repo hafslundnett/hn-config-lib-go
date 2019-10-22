@@ -1,7 +1,6 @@
 package vault
 
 import (
-	"encoding/json"
 	"log"
 	"net/http"
 
@@ -19,8 +18,7 @@ type Secret struct {
 
 //GetSecret explanation
 func (vault Vault) GetSecret(path string) (Secret, error) {
-	var secret Secret
-
+	secret := Secret{}
 	url := makeURL(vault.Cfg, path)
 
 	req, err := secretsReq(url, vault.Token.Auth.ClientToken)
@@ -28,22 +26,8 @@ func (vault Vault) GetSecret(path string) (Secret, error) {
 		log.Println("while logging in: ", err)
 	}
 
-	resp, err := vault.Client.Do(req)
-	if err != nil {
-		log.Println("while logging in: ", err)
-	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode != 200 {
-		log.Println("error, status code: ", resp.StatusCode)
-		//var b bytes.Buffer
-		//io.Copy(&b, resp.Body)
-		//return secret, fmt.Errorf("failed to get successful response: %#v, %s",
-		//	resp, b.String())
-	}
-
-	if err := json.NewDecoder(resp.Body).Decode(&secret); err != nil {
-		log.Println("failed to read body: ", err)
+	if err = vault.Client.remoteCall(req, &secret); err != nil {
+		return secret, err
 	}
 
 	return secret, nil

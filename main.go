@@ -9,7 +9,7 @@ import (
 func main() {
 	cfgFile := "C:/secret/config.yaml"
 
-	vault, err := vault.NewVault(cfgFile)
+	vault, err := vault.New(cfgFile)
 	if err != nil {
 		log.Fatalf("while configuring vault: %v", err)
 	}
@@ -17,7 +17,9 @@ func main() {
 	fmt.Println(vault)
 	fmt.Println()
 
-	secret, err := vault.GetSecret("documentor/kv/storage%2Fdocumentationdata")
+	path := "documentor/kv/storage%2Fdocumentationdata"
+
+	secret, err := vault.GetSecret(path)
 	if err != nil {
 		log.Fatalf("while getting secret: %v", err)
 	}

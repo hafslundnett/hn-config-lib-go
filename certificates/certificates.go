@@ -7,7 +7,8 @@ import (
 	"github.com/pkg/errors"
 )
 
-//MakePool explanation
+//MakePool makes a new CA pool and appends provided certificates, if any.
+//Accepts zero or more certificate files as arguments.
 func MakePool(certFiles ...string) (*x509.CertPool, error) {
 	pool := x509.NewCertPool()
 
@@ -23,7 +24,7 @@ func MakePool(certFiles ...string) (*x509.CertPool, error) {
 func loadCertFile(pool *x509.CertPool, cert string) error {
 	pem, err := ioutil.ReadFile(cert)
 	if err != nil {
-		return errors.Wrapf(err, "failed to read CA file %s from disk", cert)
+		return errors.Wrapf(err, "failed to read CA file \"%s\" from disk", cert)
 	}
 
 	if err := loadCert(pool, pem); err != nil {
