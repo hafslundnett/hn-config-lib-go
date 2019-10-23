@@ -1,3 +1,4 @@
+//TODO: delete
 package main
 
 import (
@@ -6,16 +7,12 @@ import (
 	"log"
 )
 
+//temporary example implementation
 func main() {
-	cfgFile := "C:/secret/config.yaml"
-
-	vault, err := vault.New(cfgFile)
+	vault, err := vault.New()
 	if err != nil {
 		log.Fatalf("while configuring vault: %v", err)
 	}
-
-	fmt.Println(vault)
-	fmt.Println()
 
 	path := "documentor/kv/storage%2Fdocumentationdata"
 
@@ -26,3 +23,5 @@ func main() {
 
 	fmt.Println(secret)
 }
+
+//TODO: delete

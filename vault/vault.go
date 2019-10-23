@@ -9,10 +9,10 @@ type Vault struct {
 
 //New initiaizes a new Vault. It reads configuration information from the provided file, and populates a new Vault struct
 //with the information needed to interact with secrets.
-func New(cfgFile string) (*Vault, error) {
+func New() (*Vault, error) {
 	vault := new(Vault)
 
-	if err := vault.NewConfig(cfgFile); err != nil {
+	if err := vault.NewConfig(); err != nil {
 		return vault, err
 	}
 
