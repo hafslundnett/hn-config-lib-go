@@ -1,6 +1,7 @@
 package vault
 
 import (
+	"io"
 	"net/http"
 
 	"github.com/pkg/errors"
@@ -32,10 +33,7 @@ type Metadata struct {
 
 //Authenticate uses supplied login information to authenticate to Vault and get an authentification token
 func (vault *Vault) Authenticate() error {
-	path := "auth/github/login"
-	url := makeURL(vault.Cfg, path)
-
-	req, err := authReq(url, vault.Cfg.Login)
+	req, err := authReq(vault.Config)
 	if err != nil {
 		return err
 	}
@@ -47,16 +45,34 @@ func (vault *Vault) Authenticate() error {
 	return nil
 }
 
-func authReq(url string, login string) (*http.Request, error) {
-	body, err := loginBuffer(login)
+func authReq(cfg Config) (*http.Request, error) {
+	body, path, err := makeBody(cfg)
 	if err != nil {
-		return nil, errors.Wrapf(err, "while converting token to buffer")
+		return nil, errors.Wrap(err, "while converting token to buffer")
 	}
+
+	url := makeURL(cfg, path)
 
 	req, err := http.NewRequest(http.MethodPost, url, body)
 	if err != nil {
-		return nil, errors.Wrapf(err, "while building http request")
+		return nil, errors.Wrap(err, "while building http request")
 	}
 
 	return req, nil
+}
+
+func makeBody(cfg Config) (io.Reader, string, error) {
+	var body io.Reader
+	var path string
+	var err error
+
+	if cfg.GitToken != "" {
+		path = "auth/github/login"
+		body, err = gitLogin(cfg.GitToken)
+	} else {
+		path = "auth/kubernetes/login"
+		body, err = k8Login(cfg.K8Token, cfg.Role)
+	}
+
+	return body, path, err
 }

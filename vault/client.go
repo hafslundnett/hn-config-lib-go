@@ -19,7 +19,7 @@ type Client struct {
 
 //NewClient returns a http client configured according to the supplied Config, for use with Vault
 func (vault *Vault) NewClient() error {
-	pool, err := certificates.MakePool(vault.Cfg.CaCert)
+	pool, err := certificates.MakePool(vault.Config.PemCert)
 	if err != nil {
 		return errors.Wrap(err, "while getting CA Certs")
 	}
@@ -47,7 +47,7 @@ func (vault *Vault) NewClient() error {
 func (client Client) remoteCall(req *http.Request, dst interface{}) error {
 	resp, err := client.HTTP.Do(req)
 	if err != nil {
-		return errors.Wrapf(err, "while do-ing http request")
+		return errors.Wrap(err, "while do-ing http request")
 	}
 	defer resp.Body.Close()
 
@@ -58,7 +58,7 @@ func (client Client) remoteCall(req *http.Request, dst interface{}) error {
 	}
 
 	if err := json.NewDecoder(resp.Body).Decode(&dst); err != nil {
-		return errors.Wrapf(err, "failed to read body")
+		return errors.Wrap(err, "failed to read body")
 	}
 
 	return nil

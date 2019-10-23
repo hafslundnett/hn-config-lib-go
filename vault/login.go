@@ -7,18 +7,32 @@ import (
 	"github.com/pkg/errors"
 )
 
-type loginToken struct {
+type gitToken struct {
 	Token string `json:"token"`
 }
 
-func loginBuffer(login string) (*bytes.Buffer, error) {
-	lt := &loginToken{
-		Token: login,
-	}
+type k8Token struct {
+	JWT  string `json:"jwt"`
+	Role string `json:"role"`
+}
 
+func gitLogin(login string) (*bytes.Buffer, error) {
+	return loginBuffer(&gitToken{
+		Token: login,
+	})
+}
+
+func k8Login(jwt string, role string) (*bytes.Buffer, error) {
+	return loginBuffer(&k8Token{
+		JWT:  jwt,
+		Role: role,
+	})
+}
+
+func loginBuffer(lt interface{}) (*bytes.Buffer, error) {
 	js, err := json.Marshal(lt)
 	if err != nil {
-		return nil, errors.Wrapf(err, "while marshaling token")
+		return nil, errors.Wrap(err, "while marshaling token")
 	}
 
 	return bytes.NewBuffer(js), nil
