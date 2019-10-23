@@ -28,7 +28,7 @@ func loadCertFile(pool *x509.CertPool, cert string) error {
 	}
 
 	if err := loadCert(pool, pem); err != nil {
-		return errors.Wrapf(err, "failed to load CA at %s", cert)
+		return errors.Wrapf(err, "failed to load CA at \"%s\"", cert)
 	}
 
 	return nil
