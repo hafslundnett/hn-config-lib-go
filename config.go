@@ -24,7 +24,7 @@ func (vault *Vault) NewConfig() error {
 
 	vault.Config.PemCert = os.Getenv("VAULT_CACERT")
 
-	vault.Config.GitToken = os.Getenv("GIT_TOKEN")
+	vault.Config.GitToken = os.Getenv("GITHUB_TOKEN")
 
 	if vault.Config.GitToken == "" {
 		saPath := os.Getenv("SERVICE_ACCOUNT_PATH")
