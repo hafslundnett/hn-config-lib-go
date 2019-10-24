@@ -3,8 +3,13 @@ package vault
 import "testing"
 
 func Test_MakePool(t *testing.T) {
+	//Test with no file
+	pool, err := MakePool()
+	if err != nil {
+		t.Errorf("Unexpected error: %v", err)
+	}
 	//Test with non-existing file
-	pool, err := MakePool("test_files/not_a_file.tull")
+	pool, err = MakePool("test_files/not_a_file.tull")
 	if err.Error() != "failed to read CA file \"test_files/not_a_file.tull\" from disk: open test_files/not_a_file.tull: Systemet finner ikke angitt fil." {
 		t.Errorf("Unexpected error: %v", err)
 	}

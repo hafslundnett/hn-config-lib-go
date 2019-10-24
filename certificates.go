@@ -9,12 +9,15 @@ import (
 
 //MakePool makes a new CA pool and appends provided certificates, if any.
 //Accepts zero or more certificate files as arguments.
+//Empty strings are ignored
 func MakePool(certFiles ...string) (*x509.CertPool, error) {
 	pool := x509.NewCertPool()
 
 	for _, cert := range certFiles {
-		if err := loadCertFile(pool, cert); err != nil {
-			return nil, err
+		if cert != "" {
+			if err := loadCertFile(pool, cert); err != nil {
+				return nil, err
+			}
 		}
 	}
 
