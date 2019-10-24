@@ -4,4 +4,4 @@ debug
 gcp_serviceaccount.json
 creds-*.json
 cert.pem
-secretStart.bat
+start.bat

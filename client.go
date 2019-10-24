@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"crypto/tls"
 	"encoding/json"
-	"hafslundnett/hn-config-lib-go/certificates"
 	"io"
 	"net/http"
 
@@ -19,7 +18,7 @@ type Client struct {
 
 //NewClient returns a http client configured according to the supplied Config, for use with Vault
 func (vault *Vault) NewClient() error {
-	pool, err := certificates.MakePool(vault.Config.PemCert)
+	pool, err := MakePool(vault.Config.PemCert)
 	if err != nil {
 		return errors.Wrap(err, "while getting CA Certs")
 	}

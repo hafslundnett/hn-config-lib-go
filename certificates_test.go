@@ -1,4 +1,4 @@
-package certificates
+package vault
 
 import "testing"
 
