@@ -7,8 +7,8 @@ type Vault struct {
 	Token  Token
 }
 
-//New initiaizes a new Vault. It reads configuration information from the provided file, and populates a new Vault struct
-//with the information needed to interact with secrets.
+// New initiaizes a new Vault prepares it for interacting with secrets.
+// It reads configuration information from the environment, configures a HTTP client and gets an authentification token to get secrets.
 func New() (*Vault, error) {
 	vault := new(Vault)
 

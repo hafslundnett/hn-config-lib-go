@@ -8,11 +8,11 @@ import (
 
 //Config contains the configuration information needed to do the initial setup of a Vault connection
 type Config struct {
-	VaultAddr string
-	PemCert   string
-	GitToken  string
-	K8Token   string
-	Role      string
+	VaultAddr   string
+	PemCert     string
+	GitHubToken string
+	K8Token     string
+	Role        string
 }
 
 //NewConfig reads configuration information from provided file and returns a config struct containing this information.
@@ -23,10 +23,9 @@ func (vault *Vault) NewConfig() error {
 	}
 
 	vault.Config.PemCert = os.Getenv("VAULT_CACERT")
+	vault.Config.GitHubToken = os.Getenv("GITHUB_TOKEN")
 
-	vault.Config.GitToken = os.Getenv("GITHUB_TOKEN")
-
-	if vault.Config.GitToken == "" {
+	if vault.Config.GitHubToken == "" { //TODO: adapt to  kubernetes implementation
 		saPath := os.Getenv("SERVICE_ACCOUNT_PATH")
 		if saPath == "" {
 			saPath = "/var/run/secrets/kubernetes.io/serviceaccount/token"
@@ -34,12 +33,12 @@ func (vault *Vault) NewConfig() error {
 
 		vaultK8SMountPath := os.Getenv("MOUNT_PATH")
 		if vaultK8SMountPath == "" {
-			errors.New("missing MOUNT_PATH")
+			return errors.New("missing MOUNT_PATH")
 		}
 
 		role := os.Getenv("ROLE")
 		if role == "" {
-			errors.New("missing ROLE")
+			return errors.New("missing ROLE")
 		}
 	}
 
