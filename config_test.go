@@ -1,23 +1,20 @@
 package vault
 
 import (
-	"os"
 	"testing"
 )
 
 func TestNewConfig(t *testing.T) { //TODO: test kubernetes configuration
+	SetEnv("", "", "")
 	vault := Vault{}
 
+	//Test with no environment variables
 	err := vault.NewConfig()
-	if err.Error() != "missing MOUNT_PATH" {
-		t.Errorf("Expexted error \"missing MOUNT_PATH\", got: %v", err)
-	}
+	assertErr(t, err, "missing MOUNT_PATH")
 
-	os.Setenv("VAULT_ADDR", "mock.addr")
-	os.Setenv("GITHUB_TOKEN", "mock_token")
+	//Test with environment variables
+	SetEnv(mockAddr, "", mockToken)
 
 	err = vault.NewConfig()
-	if err != nil {
-		t.Error(err)
-	}
+	assertNoErr(t, err)
 }

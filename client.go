@@ -43,7 +43,7 @@ func (vault *Vault) NewClient() error {
 	return nil
 }
 
-func (client Client) remoteCall(req *http.Request, dst interface{}) error {
+func (client Client) do(req *http.Request, dst interface{}) error {
 	resp, err := client.HTTP.Do(req)
 	if err != nil {
 		return errors.Wrap(err, "while do-ing http request")
@@ -61,11 +61,4 @@ func (client Client) remoteCall(req *http.Request, dst interface{}) error {
 	}
 
 	return nil
-}
-
-func makeURL(cfg Config, path string) string {
-	version := "/v1/"
-	address := cfg.VaultAddr
-
-	return address + version + path
 }

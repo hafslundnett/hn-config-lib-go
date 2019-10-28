@@ -25,7 +25,7 @@ func (vault Vault) GetSecret(path string) (*Secret, error) {
 		return nil, err
 	}
 
-	if err = vault.Client.remoteCall(req, &secret); err != nil {
+	if err = vault.Client.do(req, &secret); err != nil {
 		return nil, err
 	}
 

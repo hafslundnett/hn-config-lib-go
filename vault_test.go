@@ -1,36 +1,26 @@
 package vault
 
 import (
-	"os"
-	"strings"
 	"testing"
 )
 
 func TestNew(t *testing.T) {
+	SetEnv("", "", "")
 
 	//Test broken config
 	vault, err := New()
-	if err.Error() != "missing MOUNT_PATH" {
-		t.Errorf("Expected error missing MOUNT_PATH, got: %v", err)
-	}
-
-	os.Setenv("GITHUB_TOKEN", "no_token")
+	assertErr(t, err, "missing MOUNT_PATH")
 
 	//Test broken client
-	os.Setenv("VAULT_CACERT", "noFile.tull")
+	SetEnv("", mockFile, mockToken)
 	vault, err = New()
-	if !strings.Contains(err.Error(), "while getting CA Certs: failed to read CA file") {
-		t.Errorf("Expected file not found, got: %v", err)
-	}
-
-	os.Setenv("VAULT_CACERT", "")
+	assertErr(t, err, "while getting CA Certs: failed to read CA file")
 
 	//Test broken authentification
+	SetEnv("", "", mockToken)
 	vault, err = New()
-	if !strings.Contains(err.Error(), "while do-ing http request: Post https://127.0.0.1:8200/v1/auth/github/login: dial tcp 127.0.0.1:8200:") {
-		t.Errorf("Expected rejected connection, got: %v", err)
-	}
-
+	assertErr(t, err, "while do-ing http request: Post https://127.0.0.1:8200/v1/auth/github/login: dial tcp 127.0.0.1:8200:")
+	
 	//TODO: need valid test-token
 	//Test successful creation
 	//vault, err = New()

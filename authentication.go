@@ -38,7 +38,7 @@ func (vault *Vault) Authenticate() error {
 		return err
 	}
 
-	if err := vault.Client.remoteCall(req, &vault.Token); err != nil {
+	if err := vault.Client.do(req, &vault.Token); err != nil {
 		return err
 	}
 

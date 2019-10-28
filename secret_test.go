@@ -4,19 +4,12 @@ import (
 	"testing"
 )
 
-//temporary example implementation
 func TestGetSecret(t *testing.T) {
+	SetEnv("", "", mockToken)
+
 	vault, err := New()
-	if err != nil {
-		t.Errorf("while configuring vault: %v", err)
-	}
+	assertErr(t, err, "while do-ing http request: ")
 
-	path := "documentor/kv/storage%2Fdocumentationdata"
-
-	secret, err := vault.GetSecret(path)
-	if err != nil {
-		t.Errorf("while getting secret: %v", err)
-	}
-
-	t.Log(secret)
+	_, err = vault.GetSecret(mockPath)
+	assertErr(t, err, "while do-ing http request: Get https://127.0.0.1:8200/v1/mock/path:")
 }
