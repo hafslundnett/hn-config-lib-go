@@ -34,6 +34,7 @@ const (
 
 //assertNoErr if you don't expect an error
 func assertNoErr(t *testing.T, err error){
+	t.Helper()
 	if err != nil {
 		t.Fatalf("Unexpected error, got: %v", err)
 	}
@@ -41,6 +42,7 @@ func assertNoErr(t *testing.T, err error){
 
 //assertErr if you expect an error
 func assertErr(t *testing.T, err error, errSubstr string){
+	t.Helper()
 	if err == nil {
 		t.Fatalf("Expected error, got none")
 	} else if !strings.Contains(err.Error(), errSubstr) {

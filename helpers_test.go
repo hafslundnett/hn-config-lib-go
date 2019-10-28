@@ -13,7 +13,7 @@ func Test_makeUrl(t *testing.T) {
 	want := "/v1/"
 	got := makeURL(vault.Config, path)
 	if got != want {
-		t.Errorf("wanted %s, got %s", want, got)
+		t.Fatalf("wanted %s, got %s", want, got)
 	}
 
 	//Test good config

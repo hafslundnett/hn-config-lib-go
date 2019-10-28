@@ -1,10 +1,14 @@
 # hn-config-lib-go
 
-GO-implemented config library
+GO-implementation of Vault for HafslundNett
 
 UNDER DEVELOPMENT
 
-To test or run: Set environment variables VAULT_ADDR as the address of vault and set GITHUB_TOKEN as a github login token.
+To run: Make sure environment variables are set before running.
+VAULT_ADDR is the address of vault. If not set (or empty) it will default to localhost.
+GITHUB_TOKEN is a github login token. If not set (or empty) it will default to use K8 to login.
+
+VAULT_CACERT
 If the Vault does not have a publicly signed Ca certificate, you may set VAULT_CACERT as the file location of the self-signed certificate for the vault server (.pem format).
 
 
@@ -18,12 +22,12 @@ import (
 )
 
 func main() {
-	vault, err := vault.New()
+	myVault, err := vault.New()
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	secret, err := vault.GetSecret("path/to/secret")
+	secret, err := myVault.GetSecret("path/to/secret")
 	if err != nil {
 		log.Fatal(err)
 	}
