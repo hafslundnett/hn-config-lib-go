@@ -9,7 +9,7 @@ func TestNew(t *testing.T) {
 
 	//Test broken config
 	vault, err := New()
-	assertErr(t, err, "missing MOUNT_PATH")
+	assertErr(t, err, "missing ROLE env var")
 
 	//Test broken client
 	SetEnv("", mockFile, mockToken)
@@ -20,7 +20,7 @@ func TestNew(t *testing.T) {
 	SetEnv("", "", mockToken)
 	vault, err = New()
 	assertErr(t, err, "while do-ing http request: Post https://127.0.0.1:8200/v1/auth/github/login: dial tcp 127.0.0.1:8200:")
-	
+
 	//TODO: need valid test-token
 	//Test successful creation
 	//vault, err = New()

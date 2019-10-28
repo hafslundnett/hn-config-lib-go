@@ -3,6 +3,7 @@ package vault
 import (
 	"bytes"
 	"encoding/json"
+	"io/ioutil"
 
 	"github.com/pkg/errors"
 )
@@ -16,13 +17,18 @@ type k8Token struct {
 	Role string `json:"role"`
 }
 
-func gitLogin(login string) (*bytes.Buffer, error) {
+func githubLogin(login string) (*bytes.Buffer, error) {
 	return loginBuffer(&gitToken{
 		Token: login,
 	})
 }
 
-func k8Login(jwt string, role string) (*bytes.Buffer, error) {
+func k8Login(k8ServicePath string, role string) (*bytes.Buffer, error) {
+	jwt, err := getJWT(k8ServicePath)
+	if err != nil {
+		return nil, err
+	}
+
 	return loginBuffer(&k8Token{
 		JWT:  jwt,
 		Role: role,
@@ -36,4 +42,13 @@ func loginBuffer(lt interface{}) (*bytes.Buffer, error) {
 	}
 
 	return bytes.NewBuffer(js), nil
+}
+
+func getJWT(k8ServicePath string) (string, error) {
+	b, err := ioutil.ReadFile(k8ServicePath)
+	if err != nil {
+		return "", errors.Wrapf(err, "failed to read jwt token from %s", k8ServicePath)
+	}
+
+	return string(bytes.TrimSpace(b)), nil
 }

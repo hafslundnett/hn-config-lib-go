@@ -2,8 +2,8 @@ package vault
 
 import (
 	"os"
-	"testing"
 	"strings"
+	"testing"
 )
 
 func makeURL(cfg Config, path string) string {
@@ -20,20 +20,19 @@ func SetEnv(vaultAddr, pemCert, githubToken string) {
 	os.Setenv("GITHUB_TOKEN", githubToken)
 }
 
-
 //Testing helpers
 
 //testing constants, used for consistency across tests
 const (
-	mockAddr = "mock.addr"
+	mockAddr  = "mock.addr"
 	mockToken = "mock_token"
-	mockRole = "mock_role"
-	mockFile = "mock.file"
-	mockPath = "mock/path"
+	mockRole  = "mock_role"
+	mockFile  = "mock.file"
+	mockPath  = "mock/path"
 )
 
 //assertNoErr if you don't expect an error
-func assertNoErr(t *testing.T, err error){
+func assertNoErr(t *testing.T, err error) {
 	t.Helper()
 	if err != nil {
 		t.Fatalf("Unexpected error, got: %v", err)
@@ -41,7 +40,7 @@ func assertNoErr(t *testing.T, err error){
 }
 
 //assertErr if you expect an error
-func assertErr(t *testing.T, err error, errSubstr string){
+func assertErr(t *testing.T, err error, errSubstr string) {
 	t.Helper()
 	if err == nil {
 		t.Fatalf("Expected error, got none")

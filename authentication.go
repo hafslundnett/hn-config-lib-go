@@ -66,12 +66,12 @@ func makeBody(cfg Config) (io.Reader, string, error) {
 	var path string
 	var err error
 
-	if cfg.GitHubToken != "" {
+	if cfg.GithubToken != "" {
 		path = "auth/github/login"
-		body, err = gitLogin(cfg.GitHubToken)
+		body, err = githubLogin(cfg.GithubToken)
 	} else {
-		path = "auth/kubernetes/login" //TODO: construct proper path
-		body, err = k8Login(cfg.K8Token, cfg.Role)
+		path = "auth/" + cfg.K8MountPath + "/login"
+		body, err = k8Login(cfg.K8ServicePath, cfg.K8Role)
 	}
 
 	return body, path, err

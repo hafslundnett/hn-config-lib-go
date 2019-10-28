@@ -18,11 +18,10 @@ func Test_Authenticate(t *testing.T) {
 	err = vault.Authenticate()
 	assertErr(t, err, "while do-ing http request:")
 
-	//Test with k8 token
-	vault.Config.GitHubToken = ""
-	vault.Config.K8Token = mockToken
-	vault.Config.Role = mockRole
+	//TODO: Test with k8 token
+	vault.Config.GithubToken = ""
+	vault.Config.K8Role = mockRole
 
 	err = vault.Authenticate()
-	assertErr(t, err, "while do-ing http request:")
+	assertErr(t, err, "while converting token to buffer:")
 }

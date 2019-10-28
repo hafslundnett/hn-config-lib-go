@@ -10,7 +10,7 @@ func Test_MakePool(t *testing.T) {
 	//Test with no file
 	pool, err := MakePool()
 	assertNoErr(t, err)
-	
+
 	//Test with non-existing file
 	pool, err = MakePool(mockFile)
 	assertErr(t, err, "failed to read CA file")
