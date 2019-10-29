@@ -5,21 +5,21 @@ import (
 )
 
 func Test_MakePool(t *testing.T) {
-	SetEnv("", "", "")
+	SetEnv("", "", "", "", "", "")
 
-	//Test with no file
+	// Test with no file
 	pool, err := MakePool()
 	assertNoErr(t, err)
 
-	//Test with non-existing file
+	// Test with non-existing file
 	pool, err = MakePool(mockFile)
 	assertErr(t, err, "failed to read CA file")
 
-	//Test with existing file in wrong format
+	// Test with existing file in wrong format
 	pool, err = MakePool("test_files/test_cert.cer")
 	assertErr(t, err, "failed to parse PEM")
 
-	//Test with valid, outdated, certificate from golang.org
+	// Test with valid, outdated, certificate from golang.org
 	pool, err = MakePool("test_files/test_cert.pem")
 	assertNoErr(t, err)
 

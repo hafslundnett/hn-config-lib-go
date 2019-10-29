@@ -5,7 +5,7 @@ import (
 )
 
 func Test_Authenticate(t *testing.T) {
-	SetEnv("", "", mockToken)
+	SetEnv("", "", mockToken, "", "", "")
 	vault := Vault{}
 
 	err := vault.NewConfig()
@@ -14,11 +14,11 @@ func Test_Authenticate(t *testing.T) {
 	err = vault.NewClient()
 	assertNoErr(t, err)
 
-	//Test with github token
+	// Test with github token
 	err = vault.Authenticate()
 	assertErr(t, err, "while do-ing http request:")
 
-	//TODO: Test with k8 token
+	// Test with k8 token
 	vault.Config.GithubToken = ""
 	vault.Config.K8Role = mockRole
 

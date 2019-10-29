@@ -1,6 +1,6 @@
 package vault
 
-//Vault contains all information needed to get and interact with Vault secrets, after initial configuration.
+// Vault contains all information needed to get and interact with Vault secrets, after initial configuration.
 type Vault struct {
 	Config Config
 	Client Client

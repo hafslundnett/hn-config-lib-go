@@ -6,7 +6,7 @@ import (
 	"github.com/pkg/errors"
 )
 
-//Config contains the configuration information needed to do the initial setup of a Vault connection
+// Config contains the configuration information needed to do the initial setup of a Vault connection
 type Config struct {
 	VaultAddr     string
 	PemCert       string
@@ -16,7 +16,7 @@ type Config struct {
 	K8Role        string
 }
 
-//NewConfig reads configuration information from provided file and returns a config struct containing this information.
+// NewConfig reads configuration information from provided file and returns a config struct containing this information.
 func (vault *Vault) NewConfig() error {
 	vaultAddr := os.Getenv("VAULT_ADDR")
 	if vaultAddr == "" {

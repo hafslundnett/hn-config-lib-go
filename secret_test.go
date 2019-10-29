@@ -4,8 +4,8 @@ import (
 	"testing"
 )
 
-func TestGetSecret(t *testing.T) {
-	SetEnv("", "", mockToken)
+func Test_GetSecret(t *testing.T) {
+	SetEnv("", "", mockToken, "", "", "")
 
 	vault, err := New()
 	assertErr(t, err, "while do-ing http request: ")

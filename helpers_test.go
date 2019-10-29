@@ -8,7 +8,7 @@ import (
 func Test_makeUrl(t *testing.T) {
 	vault := Vault{}
 
-	//Test empty config
+	// Test empty config
 	path := ""
 	want := "/v1/"
 	got := makeURL(vault.Config, path)
@@ -16,7 +16,7 @@ func Test_makeUrl(t *testing.T) {
 		t.Fatalf("wanted %s, got %s", want, got)
 	}
 
-	//Test good config
+	// Test good config
 	vault.Config.VaultAddr = mockAddr
 	path = mockPath
 	want = vault.Config.VaultAddr + "/v1/" + path
@@ -44,7 +44,7 @@ func Test_SetEnv(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		SetEnv(test.vaultAddr, test.pemCert, test.githubToken)
+		SetEnv(test.vaultAddr, test.pemCert, test.githubToken, "", "", "")
 
 		if os.Getenv("VAULT_ADDR") != test.vaultAddr || os.Getenv("VAULT_CACERT") != test.pemCert || os.Getenv("GITHUB_TOKEN") != test.githubToken {
 			t.Fatalf("Unexpected environment variable")

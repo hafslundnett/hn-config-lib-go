@@ -7,7 +7,7 @@ import (
 	"github.com/pkg/errors"
 )
 
-//Token is used for authenticating Vault requests
+// Token is used for authenticating Vault requests
 type Token struct {
 	Auth          Auth     `json:"auth"`
 	Metadata      Metadata `json:"metadata"`
@@ -15,14 +15,14 @@ type Token struct {
 	Renewable     bool     `json:"renewable"`
 }
 
-//Auth contains the token information for authenticating Vault requests
+// Auth contains the token information for authenticating Vault requests
 type Auth struct {
 	ClientToken string   `json:"client_token"`
 	Accessor    string   `json:"accessor"`
 	Policies    []string `json:"policies"`
 }
 
-//Metadata contains important metadata for the Vault Token
+// Metadata contains important metadata for the Vault Token
 type Metadata struct {
 	Role                     string `json:"role"`
 	ServiceAccountName       string `json:"service_account_name"`
@@ -31,7 +31,7 @@ type Metadata struct {
 	ServiceAccountUID        string `json:"service_account_uid"`
 }
 
-//Authenticate uses supplied login information to authenticate to Vault and get an authentification token
+// Authenticate uses supplied login information to authenticate to Vault and get an authentification token
 func (vault *Vault) Authenticate() error {
 	req, err := authReq(vault.Config)
 	if err != nil {
@@ -45,8 +45,9 @@ func (vault *Vault) Authenticate() error {
 	return nil
 }
 
+// authReq reurns a http request for authenticating to Vault
 func authReq(cfg Config) (*http.Request, error) {
-	body, path, err := makeBody(cfg)
+	body, path, err := authBody(cfg)
 	if err != nil {
 		return nil, errors.Wrap(err, "while converting token to buffer")
 	}
@@ -61,7 +62,8 @@ func authReq(cfg Config) (*http.Request, error) {
 	return req, nil
 }
 
-func makeBody(cfg Config) (io.Reader, string, error) {
+// authBody reads the configuration and returns a reader to the correct kind of login
+func authBody(cfg Config) (io.Reader, string, error) {
 	var body io.Reader
 	var path string
 	var err error

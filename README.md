@@ -20,16 +20,19 @@ import (
 )
 
 func main() {
+    // Make reusable vault item
     myVault, err := vault.New()
     if err != nil {
         log.Fatal(err)
     }
 
-    secret, err := myVault.GetSecret("path/to/secret")
+    // Get a secret from the vault
+    mySecret, err := myVault.GetSecret("path/to/secret")
     if err != nil {
         log.Fatal(err)
     }
 
-    log.Println(secret)
+    // Do something with the secret
+    log.Println(mySecret)
 }
 ```

@@ -11,12 +11,12 @@ import (
 	"golang.org/x/net/http2"
 )
 
-//Client contains the http client used to interact with Vault
+// Client contains the http client used to interact with Vault
 type Client struct {
 	HTTP *http.Client
 }
 
-//NewClient returns a http client configured according to the supplied Config, for use with Vault
+// NewClient returns a http client configured according to the supplied Config, for use with Vault
 func (vault *Vault) NewClient() error {
 	pool, err := MakePool(vault.Config.PemCert)
 	if err != nil {
@@ -43,6 +43,7 @@ func (vault *Vault) NewClient() error {
 	return nil
 }
 
+// do is a wrapper around http.do for the Vault http client that error checks and decodes to the destination interface
 func (client Client) do(req *http.Request, dst interface{}) error {
 	resp, err := client.HTTP.Do(req)
 	if err != nil {

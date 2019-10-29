@@ -7,9 +7,9 @@ import (
 	"github.com/pkg/errors"
 )
 
-//MakePool makes a new CA pool and appends provided certificates, if any.
-//Accepts zero or more certificate files as arguments.
-//Empty strings are ignored
+// MakePool makes a new CA pool and appends provided certificates, if any.
+// Accepts zero or more certificate files as arguments.
+// Empty strings are ignored
 func MakePool(certFiles ...string) (*x509.CertPool, error) {
 	pool := x509.NewCertPool()
 
@@ -24,6 +24,7 @@ func MakePool(certFiles ...string) (*x509.CertPool, error) {
 	return pool, nil
 }
 
+// loadCertFile loads the certs from a specified file to the provided pol
 func loadCertFile(pool *x509.CertPool, cert string) error {
 	pem, err := ioutil.ReadFile(cert)
 	if err != nil {
@@ -37,6 +38,7 @@ func loadCertFile(pool *x509.CertPool, cert string) error {
 	return nil
 }
 
+// loadCert appends the PEM-formatted certificate to the provided pool
 func loadCert(pool *x509.CertPool, pem []byte) error {
 	if ok := pool.AppendCertsFromPEM(pem); !ok {
 		return errors.Errorf("failed to parse PEM")
