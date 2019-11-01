@@ -1,4 +1,4 @@
-package vault
+package cert
 
 import (
 	"crypto/x509"

@@ -1,25 +1,27 @@
 package vault
 
 import (
+	"hafslundnett/x/hn-config-lib/testing/assert"
+	"hafslundnett/x/hn-config-lib/testing/mock"
 	"testing"
 )
 
 func Test_New(t *testing.T) {
-	SetEnv("", "", "", "", "", "")
+	setEnv()
 
 	// Test broken config
 	vault, err := New()
-	assertErr(t, err, "missing ROLE env var")
+	assert.Err(t, err, "missing ROLE env var")
 
 	// Test broken client
-	SetEnv("", mockFile, mockToken, "", "", "")
+	setEnv("VAULT_CACERT", mock.File, "GITHUB_TOKEN", mock.Token)
 	vault, err = New()
-	assertErr(t, err, "while getting CA Certs: failed to read CA file")
+	assert.Err(t, err, "while getting CA Certs: failed to read CA file")
 
 	// Test broken authentification
-	SetEnv("", "", mockToken, "", "", "")
+	setEnv("GITHUB_TOKEN", mock.Token)
 	vault, err = New()
-	assertErr(t, err, "while do-ing http request: Post https://127.0.0.1:8200/v1/auth/github/login: dial tcp 127.0.0.1:8200:")
+	assert.Err(t, err, "while do-ing http request: Post https://127.0.0.1:8200/v1/auth/github/login: dial tcp 127.0.0.1:8200:")
 
 	// TODO: need valid test-token
 	// Test successful creation

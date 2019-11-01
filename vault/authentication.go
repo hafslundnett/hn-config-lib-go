@@ -38,7 +38,7 @@ func (vault *Vault) Authenticate() error {
 		return err
 	}
 
-	if err := vault.Client.do(req, &vault.Token); err != nil {
+	if err := vault.Client.GetJSON(req, &vault.Token); err != nil {
 		return err
 	}
 
@@ -52,7 +52,7 @@ func authReq(cfg Config) (*http.Request, error) {
 		return nil, errors.Wrap(err, "while converting token to buffer")
 	}
 
-	url := makeURL(cfg, path)
+	url := makeURL(cfg.Addr, path)
 
 	req, err := http.NewRequest(http.MethodPost, url, body)
 	if err != nil {
