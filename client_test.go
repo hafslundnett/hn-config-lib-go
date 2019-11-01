@@ -17,7 +17,7 @@ func Test_NewClient(t *testing.T) {
 	assertErr(t, err, "while getting CA Certs: failed to read CA file")
 
 	// Test with functional pool
-	vault.Config.PemCert = ""
+	vault.PemCert = ""
 	err = vault.NewClient()
 	assertNoErr(t, err)
 }

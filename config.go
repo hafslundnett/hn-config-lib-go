@@ -8,7 +8,7 @@ import (
 
 // Config contains the configuration information needed to do the initial setup of a Vault connection
 type Config struct {
-	VaultAddr     string
+	Addr          string
 	PemCert       string
 	GithubToken   string
 	K8ServicePath string
@@ -18,9 +18,9 @@ type Config struct {
 
 // NewConfig reads configuration information from provided file and returns a config struct containing this information.
 func (vault *Vault) NewConfig() error {
-	vaultAddr := os.Getenv("VAULT_ADDR")
-	if vaultAddr == "" {
-		vaultAddr = "https://127.0.0.1:8200"
+	addr := os.Getenv("VAULT_ADDR")
+	if addr == "" {
+		addr = "https://127.0.0.1:8200"
 	}
 
 	pemCert := os.Getenv("VAULT_CACERT")
@@ -42,15 +42,15 @@ func (vault *Vault) NewConfig() error {
 			return errors.New("missing ROLE env var")
 		}
 
-		vault.Config.K8ServicePath = k8ServicePath
-		vault.Config.K8MountPath = k8MountPath
-		vault.Config.K8Role = k8Role
+		vault.K8ServicePath = k8ServicePath
+		vault.K8MountPath = k8MountPath
+		vault.K8Role = k8Role
 
 	}
 
-	vault.Config.VaultAddr = vaultAddr
-	vault.Config.PemCert = pemCert
-	vault.Config.GithubToken = githubToken
+	vault.Addr = addr
+	vault.PemCert = pemCert
+	vault.GithubToken = githubToken
 
 	return nil
 }

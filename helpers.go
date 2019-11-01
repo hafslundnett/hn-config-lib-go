@@ -6,10 +6,10 @@ import (
 	"testing"
 )
 
-//makeURL returns a correctly formatted url for Vault http requests based on conffiguration and internal path
+// makeURL returns a correctly formatted url for Vault http requests based on conffiguration and internal path
 func makeURL(cfg Config, path string) string {
 	version := "/v1/"
-	address := cfg.VaultAddr
+	address := cfg.Addr
 
 	return address + version + path
 }

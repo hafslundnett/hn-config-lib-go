@@ -17,9 +17,9 @@ func Test_makeUrl(t *testing.T) {
 	}
 
 	// Test good config
-	vault.Config.VaultAddr = mockAddr
+	vault.Addr = mockAddr
 	path = mockPath
-	want = vault.Config.VaultAddr + "/v1/" + path
+	want = vault.Config.Addr + "/v1/" + path
 	got = makeURL(vault.Config, path)
 	if got != want {
 		t.Fatalf("wanted %s, got %s", want, got)

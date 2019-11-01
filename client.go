@@ -1,10 +1,8 @@
 package vault
 
 import (
-	"bytes"
 	"crypto/tls"
 	"encoding/json"
-	"io"
 	"net/http"
 
 	"github.com/pkg/errors"
@@ -28,12 +26,8 @@ func (vault *Vault) NewClient() error {
 		RootCAs:    pool,
 	}
 
-	transport := &http.Transport{
+	transport := &http2.Transport{
 		TLSClientConfig: tlsConfig,
-	}
-
-	if err = http2.ConfigureTransport(transport); err != nil {
-		return errors.Wrap(err, "while configuring http2")
 	}
 
 	vault.Client.HTTP = &http.Client{
@@ -49,14 +43,12 @@ func (client Client) do(req *http.Request, dst interface{}) error {
 	if err != nil {
 		return errors.Wrap(err, "while do-ing http request")
 	}
-	defer resp.Body.Close()
 
 	if resp.StatusCode != 200 {
-		var b bytes.Buffer
-		io.Copy(&b, resp.Body)
-		return errors.Errorf("error %d, failed to get successful response: %#v, %s", resp.StatusCode, resp, b.String())
+		return errors.Errorf("http error, status code %d", resp.StatusCode)
 	}
 
+	defer resp.Body.Close()
 	if err := json.NewDecoder(resp.Body).Decode(&dst); err != nil {
 		return errors.Wrap(err, "failed to read body")
 	}

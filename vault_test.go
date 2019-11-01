@@ -27,7 +27,7 @@ func Test_New(t *testing.T) {
 	//if err != nil {
 	//	t.Error(err)
 	//}
-	if vault.Config.VaultAddr != "https://127.0.0.1:8200" {
+	if vault.Config.Addr != "https://127.0.0.1:8200" {
 		t.Errorf("Error in configuration, unexpected address: %v", err)
 	}
 	if vault.Client.HTTP == nil {
