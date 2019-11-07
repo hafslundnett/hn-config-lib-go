@@ -1,9 +1,11 @@
 package vault
 
+import "hafslundnett/x/hn-config-lib/hnhttp"
+
 // Vault contains all information needed to get and interact with Vault secrets, after initial configuration.
 type Vault struct {
 	Config
-	Client Client
+	Client *hnhttp.Client
 	Token  Token
 }
 
@@ -25,4 +27,11 @@ func New() (*Vault, error) {
 	}
 
 	return vault, nil
+}
+
+// NewClient returns a http client configured according to the supplied Config, for use with Vault
+func (vault *Vault) NewClient() error {
+	var err error
+	vault.Client, err = hnhttp.NewClient(vault.Config.PemCert)
+	return err
 }

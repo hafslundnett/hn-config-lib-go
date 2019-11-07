@@ -7,4 +7,5 @@ const (
 	Role  = "mock_role"
 	File  = "mock.file"
 	Path  = "mock/path"
+	URL   = "https://" + Addr + "/" + Path
 )
