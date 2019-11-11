@@ -38,17 +38,18 @@ func Test_Do(t *testing.T) {
 	req, err := http.NewRequest(http.MethodGet, mock.URL, nil)
 	assert.NoErr(t, err)
 
-	_, err = client.Do(req)
+	err = client.Do(req)
 	assert.Err(t, err, "while do-ing http request:")
 }
 
-func Test_Get(t *testing.T) {
+func Test_PostForm(t *testing.T) {
 	client, err := NewClient()
 	assert.NoErr(t, err)
 
-	req, err := http.NewRequest(http.MethodGet, mock.URL, nil)
-	assert.NoErr(t, err)
-
-	err = client.Get(req, nil)
-	assert.Err(t, err, "while do-ing http request:")
+	values := map[string][]string{
+		"addr": []string{mock.Addr},
+		"path": []string{mock.Path},
+	}
+	err = client.PostForm(mock.URL, values)
+	assert.Err(t, err, "while post-ing http request")
 }

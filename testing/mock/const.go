@@ -2,10 +2,11 @@ package mock
 
 // testing constants, used for consistency across tests
 const (
-	Addr  = "mock.addr"
-	Token = "mock-token"
+	ID    = "mockID"
 	Role  = "mock_role"
-	File  = "mock.file"
+	Token = "mock-token"
+	Addr  = "mock.addr"
 	Path  = "mock/path"
 	URL   = "https://" + Addr + "/" + Path
+	File  = "mock.file"
 )
