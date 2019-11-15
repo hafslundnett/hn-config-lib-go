@@ -25,7 +25,7 @@ func (vault Vault) GetSecret(path string) (*Secret, error) {
 		return nil, err
 	}
 
-	if err = vault.Client.Get(req, &secret); err != nil {
+	if err = vault.Client.Do(req, &secret); err != nil {
 		return nil, err
 	}
 

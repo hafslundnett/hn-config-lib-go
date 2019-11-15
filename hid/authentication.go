@@ -1,13 +1,10 @@
 package hid
 
-import "hafslundnett/x/hn-config-lib/hnhttp"
+import (
+	"hafslundnett/x/hn-config-lib/hnhttp"
 
-// Login exp
-type Login struct {
-	URL    string
-	ID     string
-	Secret string
-}
+	"github.com/pkg/errors"
+)
 
 // Token exp
 type Token struct {
@@ -18,22 +15,24 @@ type Token struct {
 }
 
 // GetToken exp
-func (l Login) GetToken() (*Token, error) {
+func (hid HIDclient) GetToken(userID string) (*Token, error) {
 	client, err := hnhttp.NewClient()
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "while setting up http client")
 	}
 
-	var token Token
+	target := hid.Host + "/" + hid.Path
+
 	values := map[string][]string{
-		"client_id":     []string{l.ID},
-		"client_secret": []string{l.Secret},
+		"client_id":     []string{userID},
+		"client_secret": []string{hid.Secret},
 		"grant_type":    []string{"client_credentials"},
 	}
 
-	err = client.PostForm(l.URL, values, &token)
+	var token Token
+	err = client.PostForm(target, values, &token)
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "while getting token from HID")
 	}
 
 	return &token, nil

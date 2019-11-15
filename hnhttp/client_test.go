@@ -4,6 +4,7 @@ import (
 	"hafslundnett/x/hn-config-lib/testing/assert"
 	"hafslundnett/x/hn-config-lib/testing/mock"
 	"net/http"
+	"net/url"
 	"testing"
 )
 
@@ -46,10 +47,10 @@ func Test_PostForm(t *testing.T) {
 	client, err := NewClient()
 	assert.NoErr(t, err)
 
-	values := map[string][]string{
-		"addr": []string{mock.Addr},
-		"path": []string{mock.Path},
-	}
-	err = client.PostForm(mock.URL, values)
+	form := url.Values{}
+	form.Add("addr", mock.Addr)
+	form.Add("path", mock.Path)
+
+	err = client.PostForm(mock.URL, form)
 	assert.Err(t, err, "while post-ing http request")
 }

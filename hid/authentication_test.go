@@ -6,13 +6,20 @@ import (
 	"testing"
 )
 
+func mockToken() Token {
+	return Token{
+		Access:     mock.Token,
+		Expiration: 1000,
+	}
+}
+
 func Test_GetToken(t *testing.T) {
-	l := &Login{
-		URL:    mock.URL,
-		ID:     mock.ID,
+	hid := &HIDclient{
+		Host:   mock.URL,
+		Path:   mock.Path,
 		Secret: mock.Path,
 	}
 
-	_, err := l.GetToken()
+	_, err := hid.GetToken(mock.ID)
 	assert.Err(t, err, "while post-ing http request")
 }
