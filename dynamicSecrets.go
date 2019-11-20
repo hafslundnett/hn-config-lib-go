@@ -5,6 +5,10 @@ import (
 	"time"
 )
 
+const (
+	tenSeconds = 10 * time.Second
+)
+
 // SecretsSubscriber implementors have are dependant on secrets (connections strings,
 // service account credentials and similar), and want the dynamic aspects to be
 // handled automatically.
@@ -13,7 +17,7 @@ type SecretsSubscriber interface{
 
 	// Here we assume that the subscriber starts its own
 	// go routine for receiving updated secrets on the channel
-	Start()
+	StartSecretsListener()
 }
 
 type secretGetter interface {
@@ -34,7 +38,8 @@ type UpdatedSecret struct {
 }
 
 // RegisterDynamicSecretDependency by registering
-func RegisterDynamicSecretDependency(dep SecretsSubscriber, vlt *Vault) {
+func RegisterDynamicSecretDependency(dep SecretsSubscriber, vlt *Vault, dc chan<- bool) {
+	dep.StartSecretsListener()
 	spec := dep.GetSubscriptionSpec()
 	for _, path := range spec.Paths {
 		go func(p string, c chan<- UpdatedSecret, v *Vault) {
@@ -42,6 +47,7 @@ func RegisterDynamicSecretDependency(dep SecretsSubscriber, vlt *Vault) {
 				path:         p,
 				callbackChan: c,
 				v:            v,
+				doneChan:     dc,
 			}
 			maintainer.start()
 		}(path, spec.CallbackChan, vlt)
@@ -52,16 +58,22 @@ type singleSecretMaintainer struct {
 	path string
 	callbackChan chan<- UpdatedSecret
 	v secretGetter
+	doneChan chan<- bool
 }
 
 func (m singleSecretMaintainer) start() {
 	d, renewable := m.doIteration()
 	if renewable {
 		for {
-			time.Sleep(d)
+			w := getWaitDuration(d)
+			time.Sleep(w)
 			d, _ = m.doIteration()
 			if d <= 0 {
 				// Exit loop, mostly for testing purposes
+				if m.doneChan != nil {
+					m.doneChan <- true
+				}
+
 				return
 			}
 		}
@@ -86,4 +98,12 @@ func (m singleSecretMaintainer) doIteration() (time.Duration, bool) {
 	}
 
 	return d, secret.Renewable
+}
+
+func getWaitDuration(d time.Duration) time.Duration {
+	if d <= tenSeconds {
+		return d
+	}
+
+	return d - tenSeconds
 }
