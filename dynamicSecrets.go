@@ -34,7 +34,17 @@ type SecretSubscriptionSpec struct {
 // UpdatedSecret a new version of a secret
 type UpdatedSecret struct {
 	Path string
-	Secret *Secret
+	Secrets map[string]*Secret
+}
+
+func (us UpdatedSecret) getAllData() map[string]string {
+	res := map[string]string{}
+	for _, m := range us.Secrets {
+		for k, v := range m.Data {
+			res[k] = v
+		}
+	}
+	return res
 }
 
 // RegisterDynamicSecretDependency by registering
@@ -86,10 +96,17 @@ func (m singleSecretMaintainer) doIteration() (time.Duration, bool) {
 		log.Printf("Error while getting secret %s :: %v", m.path, err)
 		return time.Second * 10, true
 	}
+	secrets := map[string]*Secret{m.path: secret}
+	if sp, ok := secret.Data["secret-path"]; ok {
+		innerSecret, err := m.v.GetSecret(sp)
+		if err != nil {
+			secrets[sp] = innerSecret
+		}
+	}
 
 	us := UpdatedSecret{
 		Path: m.path,
-		Secret: secret,
+		Secrets: secrets,
 	}
 	m.callbackChan <- us
 	d := time.Millisecond * 0
@@ -99,6 +116,7 @@ func (m singleSecretMaintainer) doIteration() (time.Duration, bool) {
 
 	return d, secret.Renewable
 }
+
 
 func getWaitDuration(d time.Duration) time.Duration {
 	if d <= tenSeconds {
