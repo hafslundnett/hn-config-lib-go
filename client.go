@@ -16,14 +16,16 @@ type Client struct {
 
 // NewClient returns a http client configured according to the supplied Config, for use with Vault
 func (vault *Vault) NewClient() error {
-	pool, err := MakePool(vault.Config.PemCert)
-	if err != nil {
-		return errors.Wrap(err, "while getting CA Certs")
-	}
-
 	tlsConfig := &tls.Config{
 		MinVersion: tls.VersionTLS12,
-		RootCAs:    pool,
+	}
+
+	if vault.Config.PemCert != "" {
+		pool, err := MakePool(vault.Config.PemCert)
+		if err != nil {
+			return errors.Wrap(err, "while getting CA Certs")
+		}
+		tlsConfig.RootCAs = pool
 	}
 
 	transport := &http2.Transport{
