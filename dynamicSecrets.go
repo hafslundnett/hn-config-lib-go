@@ -100,7 +100,7 @@ func (m singleSecretMaintainer) doIteration() (time.Duration, bool) {
 	secrets := map[string]*Secret{m.path: secret}
 	if sp, ok := secret.Data["secret-path"]; ok {
 		innerSecret, err := m.v.GetSecret(sp)
-		if err != nil {
+		if err == nil {
 			secrets[sp] = innerSecret
 		}
 	}
