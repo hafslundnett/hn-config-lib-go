@@ -37,7 +37,8 @@ type UpdatedSecret struct {
 	Secrets map[string]*Secret
 }
 
-func (us UpdatedSecret) getAllData() map[string]string {
+// GetAllData combines all data in all secrets to a single map
+func (us UpdatedSecret) GetAllData() map[string]string {
 	res := map[string]string{}
 	for _, m := range us.Secrets {
 		for k, v := range m.Data {
