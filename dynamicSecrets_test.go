@@ -19,13 +19,13 @@ func Test_singleSecretMaintainer_start_notRenewable_returnsAtOnce(t *testing.T) 
 	c := make(chan UpdatedSecret)
 	p := "test/kv/secret"
 	m := singleSecretMaintainer{
-		path: p,
+		path:         p,
 		callbackChan: c,
-		v: g,
+		v:            g,
 	}
 
-	go func(){
-		us := <- c
+	go func() {
+		us := <-c
 		receivedSecrets = append(receivedSecrets, us)
 	}()
 
@@ -38,7 +38,7 @@ func Test_singleSecretMaintainer_start_notRenewable_returnsAtOnce(t *testing.T) 
 	}
 }
 
-func Test_singleSecretMaintainer_start_renewable_iteratesAsExpected(t *testing.T){
+func Test_singleSecretMaintainer_start_renewable_iteratesAsExpected(t *testing.T) {
 	// Arrange
 	s1 := &Secret{
 		Renewable:     true,
@@ -56,14 +56,14 @@ func Test_singleSecretMaintainer_start_renewable_iteratesAsExpected(t *testing.T
 	p := "test/kv/secret"
 	doneChan := make(chan bool)
 	m := singleSecretMaintainer{
-		path: p,
+		path:         p,
 		callbackChan: c,
-		v: g,
-		doneChan: doneChan,
+		v:            g,
+		doneChan:     doneChan,
 	}
 
 	receivedSecrets := []UpdatedSecret{}
-	go func(){
+	go func() {
 		for {
 			select {
 			case us := <-c:
@@ -92,8 +92,8 @@ func Test_getWaitDuration(t *testing.T) {
 		args args
 		want time.Duration
 	}{
-		{ name: "lessThan10", args: args{d: 9 * time.Second}, want: 9 * time.Second},
-		{ name: "moreThan10", args: args{d: 11 * time.Second}, want: 1 * time.Second},
+		{name: "lessThan10", args: args{d: 9 * time.Second}, want: 9 * time.Second},
+		{name: "moreThan10", args: args{d: 11 * time.Second}, want: 1 * time.Second},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -106,7 +106,7 @@ func Test_getWaitDuration(t *testing.T) {
 
 type mockSecretGetter struct {
 	invocationCount int
-	returnSecrets []*Secret
+	returnSecrets   []*Secret
 }
 
 func (m *mockSecretGetter) GetSecret(path string) (*Secret, error) {
