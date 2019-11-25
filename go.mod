@@ -1,8 +1,6 @@
-module hafslundnett/x/hn-config-lib
-
-go 1.12
+module github.com/hafslundnett/hn-config-lib-go
 
 require (
 	github.com/pkg/errors v0.8.1
-	golang.org/x/net v0.0.0-20191021144547-ec77196f6094
+	golang.org/x/net v0.0.0-20191125084936-ffdde1057850
 )
