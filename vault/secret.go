@@ -18,14 +18,14 @@ type Secret struct {
 // GetSecret returns the secret from the provided path
 func (vault Vault) GetSecret(path string) (*Secret, error) {
 	secret := new(Secret)
-	url := makeURL(vault.Config, path)
+	url := makeURL(vault.Config.Addr, path)
 
 	req, err := secretsReq(url, vault.Token.Auth.ClientToken)
 	if err != nil {
 		return nil, err
 	}
 
-	if err = vault.Client.do(req, &secret); err != nil {
+	if err = vault.Client.Do(req, &secret); err != nil {
 		return nil, err
 	}
 

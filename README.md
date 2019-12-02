@@ -15,7 +15,7 @@ Example usage:
 
 ```GO
 import (
-    vault "hafslundnett/hn-config-lib-go"
+    "hafslundnett/hn-config-lib-go/vault"
     "log"
 )
 

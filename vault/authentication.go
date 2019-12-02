@@ -38,7 +38,7 @@ func (vault *Vault) Authenticate() error {
 		return err
 	}
 
-	if err := vault.Client.do(req, &vault.Token); err != nil {
+	if err := vault.Client.Do(req, &vault.Token); err != nil {
 		return err
 	}
 
@@ -52,7 +52,7 @@ func authReq(cfg Config) (*http.Request, error) {
 		return nil, errors.Wrap(err, "while converting token to buffer")
 	}
 
-	url := makeURL(cfg, path)
+	url := makeURL(cfg.Addr, path)
 
 	req, err := http.NewRequest(http.MethodPost, url, body)
 	if err != nil {
@@ -64,17 +64,13 @@ func authReq(cfg Config) (*http.Request, error) {
 
 // authBody reads the configuration and returns a reader to the correct kind of login
 func authBody(cfg Config) (io.Reader, string, error) {
-	var body io.Reader
-	var path string
-	var err error
-
 	if cfg.GithubToken != "" {
-		path = "auth/github/login"
-		body, err = githubLogin(cfg.GithubToken)
-	} else {
-		path = "auth/" + cfg.K8MountPath + "/login"
-		body, err = k8Login(cfg.K8ServicePath, cfg.K8Role)
+		path := "auth/github/login"
+		body, err := githubLogin(cfg.GithubToken)
+		return body, path, err
 	}
 
+	path := "auth/" + cfg.K8MountPath + "/login"
+	body, err := k8Login(cfg.K8ServicePath, cfg.K8Role)
 	return body, path, err
 }
