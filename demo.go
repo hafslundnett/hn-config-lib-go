@@ -1,8 +1,8 @@
 package lib
 
 import (
-	"hafslundnett/x/hn-config-lib/hid"
-	"hafslundnett/x/hn-config-lib/vault"
+	"github.com/hafslundnett/hn-config-lib-go/hid"
+	"github.com/hafslundnett/hn-config-lib-go/vault"
 	"log"
 	"net/http"
 )

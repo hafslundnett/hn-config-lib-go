@@ -4,8 +4,8 @@ import (
 	"os"
 	"testing"
 
-	"github.com/giert/silver-octo-packet/assert"
-	"github.com/giert/silver-octo-packet/mock"
+	"github.com/hafslundnett/hn-config-lib-go/testing/assert"
+	"github.com/hafslundnett/hn-config-lib-go/testing/mock"
 )
 
 func Test_Set(t *testing.T) {

@@ -1,11 +1,12 @@
 package hnhttp
 
 import (
-	"hafslundnett/x/hn-config-lib/testing/assert"
-	"hafslundnett/x/hn-config-lib/testing/mock"
 	"net/http"
 	"net/url"
 	"testing"
+
+	"github.com/hafslundnett/hn-config-lib-go/testing/assert"
+	"github.com/hafslundnett/hn-config-lib-go/testing/mock"
 )
 
 //TODO: better tests, need testing server
@@ -13,7 +14,7 @@ import (
 func Test_NewClient(t *testing.T) {
 	// Test with pool error
 	_, err := NewClient(mock.File)
-	assert.Err(t, err, "while getting CA Certs: failed to read CA file")
+	assert.Err(t, err, "while loading CA cert from file: failed to read CA file")
 
 	// Test with no pool
 	_, err = NewClient()

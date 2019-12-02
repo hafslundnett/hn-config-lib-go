@@ -1,9 +1,10 @@
 package vault
 
 import (
-	"hafslundnett/x/hn-config-lib/testing/assert"
-	"hafslundnett/x/hn-config-lib/testing/mock"
 	"testing"
+
+	"github.com/hafslundnett/hn-config-lib-go/testing/assert"
+	"github.com/hafslundnett/hn-config-lib-go/testing/mock"
 )
 
 func Test_New(t *testing.T) {
@@ -16,7 +17,7 @@ func Test_New(t *testing.T) {
 	// Test broken client
 	setEnv("VAULT_CACERT", mock.File, "GITHUB_TOKEN", mock.Token)
 	vault, err = New()
-	assert.Err(t, err, "while getting CA Certs: failed to read CA file")
+	assert.Err(t, err, "while loading CA cert from file: failed to read CA file")
 
 	// Test broken authentification
 	setEnv("GITHUB_TOKEN", mock.Token)
@@ -49,7 +50,7 @@ func Test_NewClient(t *testing.T) {
 
 	// Test with pool error
 	err = vault.NewClient()
-	assert.Err(t, err, "while getting CA Certs: failed to read CA file")
+	assert.Err(t, err, "while loading CA cert from file: failed to read CA file")
 
 	// Test with functional pool
 	vault.PemCert = ""

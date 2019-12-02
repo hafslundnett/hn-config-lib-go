@@ -21,12 +21,12 @@ func MakePool(certFiles ...string) (*Pool, error) {
 
 	err := pool.AppendFromSystem()
 	if err != nil {
-		errors.Wrap(err, "while loading system CA certs")
+		return nil, errors.Wrap(err, "while loading system CA certs")
 	}
 
 	err = pool.AppendFromFiles(certFiles)
 	if err != nil {
-		errors.Wrap(err, "while loading CA cert from file")
+		return nil, errors.Wrap(err, "while loading CA cert from file")
 	}
 
 	return pool, nil

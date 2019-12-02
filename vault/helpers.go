@@ -1,7 +1,7 @@
 package vault
 
 import (
-	"hafslundnett/x/hn-config-lib/env"
+	"github.com/hafslundnett/hn-config-lib-go/env"
 )
 
 // makeURL returns a correctly formatted url for Vault http requests

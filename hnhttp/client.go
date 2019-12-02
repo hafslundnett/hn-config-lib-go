@@ -3,9 +3,10 @@ package hnhttp
 import (
 	"crypto/tls"
 	"encoding/json"
-	"hafslundnett/x/hn-config-lib/cert"
 	"io"
 	"net/http"
+
+	"github.com/hafslundnett/hn-config-lib-go/cert"
 
 	"github.com/pkg/errors"
 	"golang.org/x/net/http2"

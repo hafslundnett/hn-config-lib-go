@@ -1,8 +1,8 @@
 package vault
 
 import (
-	"hafslundnett/x/hn-config-lib/testing/assert"
-	"hafslundnett/x/hn-config-lib/testing/mock"
+	"github.com/hafslundnett/hn-config-lib-go/testing/assert"
+	"github.com/hafslundnett/hn-config-lib-go/testing/mock"
 	"testing"
 )
 

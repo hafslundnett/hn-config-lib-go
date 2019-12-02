@@ -1,7 +1,7 @@
 package hid
 
 import (
-	"hafslundnett/x/hn-config-lib/hnhttp"
+	"github.com/hafslundnett/hn-config-lib-go/hnhttp"
 )
 
 // HID expl

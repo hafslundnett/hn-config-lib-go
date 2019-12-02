@@ -1,8 +1,8 @@
 package hid
 
 import (
-	"hafslundnett/x/hn-config-lib/env"
-	"hafslundnett/x/hn-config-lib/testing/assert"
+	"github.com/hafslundnett/hn-config-lib-go/env"
+	"github.com/hafslundnett/hn-config-lib-go/testing/assert"
 	"testing"
 )
 

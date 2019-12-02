@@ -1,6 +1,6 @@
 package vault
 
-import "hafslundnett/x/hn-config-lib/hnhttp"
+import "github.com/hafslundnett/hn-config-lib-go/hnhttp"
 
 // Vault contains all information needed to get and interact with Vault secrets, after initial configuration.
 type Vault struct {
