@@ -4,14 +4,15 @@ import (
 	"hafslundnett/x/hn-config-lib/hid"
 	"hafslundnett/x/hn-config-lib/vault"
 	"log"
+	"net/http"
 )
 
-func main() {
+func demo() {
 	vaultDemo()
 
-	token := hidClientDemo()
+	myRequest := hidClientDemo()
 
-	hidAPIdemo(*token)
+	hidAPIdemo(myRequest)
 }
 
 func vaultDemo() {
@@ -31,30 +32,46 @@ func vaultDemo() {
 	log.Println(mySecret)
 }
 
-func hidClientDemo() *hid.Token {
+func hidClientDemo() *http.Request {
 	// Make reusable HID item
-	myHID := hid.New("HIDaddress.com", "path/to/somewhere", "somesecret")
+	myHID, err := hid.New()
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	// Get a token from HID
-	myToken, err := myHID.GetToken("someUser")
+	myToken, err := myHID.GetToken("username", "secret")
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	// Make request struct as usual
+	myRequest, err := http.NewRequest("POST", "api.url", nil)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Add token to http request header
+	myRequest.Header.Add("Authorization", myToken.Raw)
 
 	// Send token to API with requests
-	return myToken
+	return myRequest
 }
 
-func hidAPIdemo(token hid.Token) {
+func hidAPIdemo(r *http.Request) {
 	// Make reusable HID item
-	myHID := hid.New("HIDaddress.com", "path/to/somewhere/else", "someothersecret")
-
-	// Verify if token is valid
-	valid, err := myHID.Introspection(token)
+	myHID, err := hid.New()
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	// Do something with this information
-	log.Println(valid)
+	// Verify if token is valid. Invalid token throws an error
+	err = myHID.AuthorizeRequest(r, "audience", "scope")
+	if err != nil {
+		log.Println("Token is invalid")
+		log.Fatal(err)
+	}
+
+	// Handle the request
+	log.Println("The request was successfull")
 }

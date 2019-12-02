@@ -11,21 +11,21 @@ import (
 	"golang.org/x/net/http2"
 )
 
-// Client contains the http client used to interact with Vault
+// Client expl
 type Client struct {
 	HTTP *http.Client
 }
 
-// NewClient returns a http client configured according to the supplied Config, for use with Vault
-func NewClient(certificate ...string) (*Client, error) {
-	pool, err := cert.MakePool(certificate...)
+// NewClient expl
+func NewClient(certificates ...string) (*Client, error) {
+	pool, err := cert.MakePool(certificates...)
 	if err != nil {
-		return nil, errors.Wrap(err, "while getting CA Certs")
+		return nil, err
 	}
 
 	tlsConfig := &tls.Config{
 		MinVersion: tls.VersionTLS12,
-		RootCAs:    pool,
+		RootCAs:    pool.Certs,
 	}
 
 	transport := &http2.Transport{
@@ -53,6 +53,21 @@ func (client Client) Do(req *http.Request, dst ...interface{}) error {
 	}
 
 	err = procResp(resp, dst...)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// Get expl
+func (client Client) Get(url string, dst ...interface{}) error {
+	req, err := http.NewRequest(http.MethodGet, url, nil)
+	if err != nil {
+		return err
+	}
+
+	err = client.Do(req, dst...)
 	if err != nil {
 		return err
 	}

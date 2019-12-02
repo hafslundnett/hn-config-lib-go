@@ -40,7 +40,9 @@ func Test_Set(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		SetMap(test.vars)
+		err := SetMap(test.vars)
+		assert.NoErr(t, err)
+
 		for _, field := range fields {
 			assert.Result(t, os.Getenv(field), test.vars[field])
 		}
@@ -48,7 +50,9 @@ func Test_Set(t *testing.T) {
 
 	for _, test := range tests {
 		s := mapToSlice(test.vars)
-		Set(s...)
+		err := Set(s...)
+		assert.NoErr(t, err)
+
 		for _, field := range fields {
 			assert.Result(t, os.Getenv(field), test.vars[field])
 		}

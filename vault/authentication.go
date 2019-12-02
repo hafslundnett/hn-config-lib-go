@@ -64,17 +64,13 @@ func authReq(cfg Config) (*http.Request, error) {
 
 // authBody reads the configuration and returns a reader to the correct kind of login
 func authBody(cfg Config) (io.Reader, string, error) {
-	var body io.Reader
-	var path string
-	var err error
-
 	if cfg.GithubToken != "" {
-		path = "auth/github/login"
-		body, err = githubLogin(cfg.GithubToken)
-	} else {
-		path = "auth/" + cfg.K8MountPath + "/login"
-		body, err = k8Login(cfg.K8ServicePath, cfg.K8Role)
+		path := "auth/github/login"
+		body, err := githubLogin(cfg.GithubToken)
+		return body, path, err
 	}
 
+	path := "auth/" + cfg.K8MountPath + "/login"
+	body, err := k8Login(cfg.K8ServicePath, cfg.K8Role)
 	return body, path, err
 }

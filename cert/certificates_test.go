@@ -28,13 +28,13 @@ func Test_MakePool(t *testing.T) {
 	pool, err = MakePool(pemFile)
 	assert.NoErr(t, err)
 
-	if pool.Subjects()[0][0] != 48 {
+	if pool.Certs.Subjects()[0][0] != 48 {
 		t.Fatalf("Incorrect information in pool")
 	}
-	if pool.Subjects()[0][1] != 109 {
+	if pool.Certs.Subjects()[0][1] != 109 {
 		t.Fatalf("Incorrect information in pool")
 	}
-	if pool.Subjects()[0][2] != 49 {
+	if pool.Certs.Subjects()[0][2] != 49 {
 		t.Fatalf("Incorrect information in pool")
 	}
 }
