@@ -98,8 +98,9 @@ func (m singleSecretMaintainer) start() {
 	for {
 		w := getWaitDuration(d)
 		time.Sleep(w)
-		d, _ = m.doIteration()
-		if d <= 0 {
+		var renewable bool
+		d, renewable = m.doIteration()
+		if !renewable || d <= 0 {
 			// Exit loop, mostly for testing purposes
 			if m.doneChan != nil {
 				m.doneChan <- true

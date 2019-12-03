@@ -5,7 +5,6 @@ import (
 	"time"
 )
 
-/**
 func Test_singleSecretMaintainer_start_notRenewable_returnsAtOnce(t *testing.T) {
 	// Arrange
 	receivedSecrets := []UpdatedSecret{}
@@ -38,7 +37,7 @@ func Test_singleSecretMaintainer_start_notRenewable_returnsAtOnce(t *testing.T) 
 		t.Errorf("Expected 1 received secret. Got %d", len(receivedSecrets))
 	}
 }
-*/
+
 
 func Test_singleSecretMaintainer_start_renewable_iteratesAsExpected(t *testing.T) {
 	// Arrange
