@@ -3,3 +3,4 @@ debug
 .idea/*
 gcp_serviceaccount.json
 creds-*.json
+*.bat

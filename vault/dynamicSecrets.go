@@ -6,7 +6,7 @@ import (
 )
 
 const (
-	tenSeconds = 10 * time.Second // GO-LINT: var tenSeconds is of type time.Duration; don't use unit-specific suffix "Seconds"
+	tenSeconds = 10 * time.Second
 )
 
 // SecretsSubscriber implementors have are dependant on secrets (connections strings,
