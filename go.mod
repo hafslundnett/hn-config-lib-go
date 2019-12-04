@@ -1,6 +1,6 @@
 module github.com/hafslundnett/hn-config-lib-go
 
-go 1.12
+go 1.13
 
 require (
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible

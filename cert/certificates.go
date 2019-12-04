@@ -2,6 +2,7 @@ package cert
 
 import (
 	"crypto/x509"
+	"log"
 	"runtime"
 
 	"github.com/pkg/errors"
@@ -20,11 +21,8 @@ func MakePool(certFiles ...string) (*Pool, error) {
 		Certs: x509.NewCertPool(),
 	}
 
-	if runtime.GOOS == "windows" {
-		err := pool.AppendFromSystem()
-		if err != nil {
-			return nil, errors.Wrap(err, "while loading system CA certs")
-		}
+	if runtime.GOOS == "windows" && len(certFiles) == 0 {
+		log.Println("Windows requires certificate file to avoid error \"x509: certificate signed by unknown authority\"")
 	}
 
 	err := pool.AppendFromFiles(certFiles)
