@@ -7,7 +7,7 @@ import (
 	"unsafe"
 )
 
-// AppendFromSystem expl
+// AppendFromSystem builds a CA pool with all certificates known by the host Windows operating system.
 func (pool Pool) AppendFromSystem() error {
 	storeHandle, err := syscall.CertOpenSystemStore(0, syscall.StringToUTF16Ptr("Root"))
 	if err != nil {
