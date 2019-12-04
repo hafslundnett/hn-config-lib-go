@@ -1,13 +1,15 @@
 package hid
 
 import (
+	"testing"
+
 	"github.com/hafslundnett/hn-config-lib-go/env"
 	"github.com/hafslundnett/hn-config-lib-go/testing/assert"
-	"testing"
 )
 
 func Test_New(t *testing.T) {
 	// test with defaults. Fails successfully if HID is not running locally
+	env.Set("HID_ADDR", "")
 	testHID, err := New()
 	assert.Err(t, err, "while renewing HID public key set")
 

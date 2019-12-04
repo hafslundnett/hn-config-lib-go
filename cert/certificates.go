@@ -3,7 +3,6 @@ package cert
 import (
 	"crypto/x509"
 	"log"
-	"runtime"
 
 	"github.com/pkg/errors"
 )
@@ -13,19 +12,26 @@ type Pool struct {
 	Certs *x509.CertPool
 }
 
-// MakePool makes a new CA pool and appends provided certificates, if any.
+// MakePool copies the system CA pool and appends provided certificates, if any.
 // Accepts zero or more certificate files as arguments.
 // Empty strings are ignored
+// NOTE: Cannot get certificates on Windows, therefore a certificate file is required!
 func MakePool(certFiles ...string) (*Pool, error) {
-	pool := &Pool{
-		Certs: x509.NewCertPool(),
+	pool := new(Pool)
+	var err error
+
+	pool.Certs, err = x509.SystemCertPool() // Throws error on Windows
+	if err != nil {
+		pool.Certs = x509.NewCertPool()
+
+		if len(certFiles) == 0 {
+			log.Println("Windows can not load system certificates, your pool is now empty.")
+			log.Println("HTTPS requests will respond with \"x509: certificate signed by unknown authority\".")
+			log.Println("Consider not setting TLS' RootCAs to make it use the default certificates instead.")
+		}
 	}
 
-	if runtime.GOOS == "windows" && len(certFiles) == 0 {
-		log.Println("Windows requires certificate file to avoid error \"x509: certificate signed by unknown authority\"")
-	}
-
-	err := pool.AppendFromFiles(certFiles)
+	err = pool.AppendFromFiles(certFiles)
 	if err != nil {
 		return nil, errors.Wrap(err, "while loading CA cert from file")
 	}

@@ -1,10 +1,11 @@
 package lib
 
 import (
-	"github.com/hafslundnett/hn-config-lib-go/hid"
-	"github.com/hafslundnett/hn-config-lib-go/vault"
 	"log"
 	"net/http"
+
+	"github.com/hafslundnett/hn-config-lib-go/hid"
+	"github.com/hafslundnett/hn-config-lib-go/vault"
 )
 
 func demo() {
@@ -39,7 +40,7 @@ func hidClientDemo() *http.Request {
 		log.Fatal(err)
 	}
 
-	// Get a token from HID
+	// Get a bearer token from HID
 	myToken, err := myHID.GetToken("username", "secret")
 	if err != nil {
 		log.Fatal(err)
@@ -51,7 +52,7 @@ func hidClientDemo() *http.Request {
 		log.Fatal(err)
 	}
 
-	// Add token to http request header
+	// Add bearer token to http request header
 	myRequest.Header.Add("Authorization", myToken.Raw)
 
 	// Send token to API with requests
