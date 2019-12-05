@@ -19,17 +19,14 @@ type Client struct {
 
 // NewClient expl
 func NewClient(certificates ...string) (*Client, error) {
-	tlsConfig := &tls.Config{
-		MinVersion: tls.VersionTLS12,
+	pool, err := cert.MakePool(certificates...)
+	if err != nil {
+		return nil, err
 	}
 
-	if len(certificates) > 0 {
-		pool, err := cert.MakePool(certificates...)
-		if err != nil {
-			return nil, err
-		}
-
-		tlsConfig.RootCAs = pool.Certs
+	tlsConfig := &tls.Config{
+		MinVersion: tls.VersionTLS12,
+		RootCAs:    pool.Certs,
 	}
 
 	transport := &http2.Transport{
