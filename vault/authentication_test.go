@@ -1,13 +1,13 @@
 package vault
 
 import (
+	"testing"
+
 	"github.com/hafslundnett/hn-config-lib-go/testing/assert"
 	"github.com/hafslundnett/hn-config-lib-go/testing/mock"
-	"testing"
 )
 
 func Test_Authenticate(t *testing.T) {
-	setEnv("GITHUB_TOKEN", mock.Token)
 	vault := Vault{}
 
 	err := vault.NewConfig()
@@ -16,14 +16,19 @@ func Test_Authenticate(t *testing.T) {
 	err = vault.NewClient()
 	assert.NoErr(t, err)
 
-	// Test with github token
+	// Test with valid test token
 	err = vault.Authenticate()
-	assert.Err(t, err, "while do-ing http request:")
+	assert.NoErr(t, err)
 
-	// Test with k8 token
+	// Test with invalid github token
+	vault.GithubToken = mock.Token
+	err = vault.Authenticate()
+	assert.Err(t, err, "http error, status 500")
+
+	// Test with invalid k8 token
 	vault.GithubToken = ""
 	vault.K8Role = mock.Role
 
 	err = vault.Authenticate()
-	assert.Err(t, err, "while converting token to buffer:")
+	assert.Err(t, err, "while converting token to buffer")
 }

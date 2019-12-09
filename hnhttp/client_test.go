@@ -9,8 +9,6 @@ import (
 	"github.com/hafslundnett/hn-config-lib-go/testing/mock"
 )
 
-//TODO: better tests, need testing server
-
 func Test_NewClient(t *testing.T) {
 	// Test with pool error
 	_, err := NewClient(mock.File)
@@ -26,7 +24,7 @@ func Test_checkRespCode(t *testing.T) {
 		StatusCode: 404,
 	}
 	err := checkRespCode(resp)
-	assert.Err(t, err, "http error, status code 404")
+	assert.Err(t, err, "http error, status 404")
 
 	resp.StatusCode = 200
 	err = checkRespCode(resp)
@@ -41,7 +39,7 @@ func Test_Do(t *testing.T) {
 	assert.NoErr(t, err)
 
 	err = client.Do(req)
-	assert.Err(t, err, "while do-ing http request:")
+	assert.Err(t, err, "while do-ing http request")
 }
 
 func Test_PostForm(t *testing.T) {

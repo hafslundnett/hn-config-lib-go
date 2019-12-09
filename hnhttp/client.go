@@ -45,12 +45,12 @@ func NewClient(certificates ...string) (*Client, error) {
 }
 
 // Do is a wrapper around http.do that error checks and decodes the response.
-// dst is an optional destination pointer that must be either implementing io.writer or a struct to be populated by JSON data
-// as dst is a variadic argument, multiple dst may be passed, however any additional destinations are ignored with no error.
+// 'dst' is an optional destination pointer that must be either implementing io.writer or a struct to be populated by JSON data.
+// As 'dst' is a variadic argument, multiple 'dst' may be passed. However; any additional destinations are ignored with no error.
 func (client Client) Do(req *http.Request, dst ...interface{}) error {
 	resp, err := client.HTTP.Do(req)
 	if err != nil {
-		return errors.Wrap(err, "while do-ing http request")
+		return errors.Wrapf(err, "while do-ing http request to %s", req.URL)
 	}
 
 	err = procResp(resp, dst...)
@@ -77,13 +77,12 @@ func (client Client) Get(url string, dst ...interface{}) error {
 }
 
 // PostForm is a wrapper around http.PostForm that takes multiple kinds of input, and makes error checks and decodes the response.
-// src is the source struct or map
-// dst is an optional destination pointer that must be either implementing io.writer or a struct to be populated by JSON data
-// as dst is a variadic argument, multiple dst may be passed, however any additional destinations are ignored with no error.
+// 'dst' is an optional destination pointer that must be either implementing io.writer or a struct to be populated by JSON data.
+// As 'dst' is a variadic argument, multiple 'dst' may be passed. However; any additional destinations are ignored with no error.
 func (client Client) PostForm(url string, data map[string][]string, dst ...interface{}) error {
 	resp, err := client.HTTP.PostForm(url, data)
 	if err != nil {
-		return errors.Wrap(err, "while post-ing http request")
+		return errors.Wrapf(err, "while post-ing http request to %s", url)
 	}
 
 	err = procResp(resp, dst...)
@@ -95,7 +94,7 @@ func (client Client) PostForm(url string, data map[string][]string, dst ...inter
 }
 
 func procResp(resp *http.Response, dst ...interface{}) error {
-	//check response code
+	// Check response code
 	if err := checkRespCode(resp); err != nil {
 		return err
 	}
@@ -129,20 +128,8 @@ func decodeBody(body io.ReadCloser, dst interface{}) error {
 // checkRespCode checks the status code of an HTTP request.
 func checkRespCode(r *http.Response) error {
 	if r.StatusCode < 200 || r.StatusCode > 299 {
-		return errors.Errorf("http error, status code %d", r.StatusCode)
+		return errors.Errorf("http error, status %d: %s", r.StatusCode, r.Status)
 	}
 
 	return nil
 }
-
-/**
-func structToValues(i interface{}) (data url.Values) {
-	data = url.Values{}
-	iVal := reflect.ValueOf(i).Elem()
-	typ := iVal.Type()
-	for i := 0; i < iVal.NumField(); i++ {
-		data.Set(typ.Field(i).Name, fmt.Sprint(iVal.Field(i)))
-	}
-	return
-}
-*/

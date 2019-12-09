@@ -1,9 +1,10 @@
 package vault
 
 import (
+	"testing"
+
 	"github.com/hafslundnett/hn-config-lib-go/testing/assert"
 	"github.com/hafslundnett/hn-config-lib-go/testing/mock"
-	"testing"
 )
 
 func Test_MakeUrl(t *testing.T) {
@@ -21,31 +22,3 @@ func Test_MakeUrl(t *testing.T) {
 	got = makeURL(addr, path)
 	assert.Result(t, got, want)
 }
-
-/**
-func Test_setEnv(t *testing.T) {
-	tests := []struct {
-		vaultAddr   string
-		pemCert     string
-		githubToken string
-	}{
-		{
-			vaultAddr:   mock.Addr,
-			pemCert:     mock.File,
-			githubToken: mock.Token,
-		}, {
-			vaultAddr:   "",
-			pemCert:     "",
-			githubToken: "",
-		},
-	}
-
-	for _, test := range tests {
-		setEnv(test.vaultAddr, test.pemCert, test.githubToken)
-
-		if os.Getenv("VAULT_ADDR") != test.vaultAddr || os.Getenv("VAULT_CACERT") != test.pemCert || os.Getenv("GITHUB_TOKEN") != test.githubToken {
-			t.Fatalf("Unexpected environment variable")
-		}
-	}
-}
-*/

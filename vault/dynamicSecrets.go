@@ -65,7 +65,7 @@ func RegisterDynamicSecretDependency(dep SecretsSubscriber, vlt *Vault, dc chan<
 		if err != nil {
 			log.Fatal(err)
 		}
-		maintainer.setInitialTtl(ttl)
+		maintainer.setInitialTTL(ttl)
 		dep.ReceiveAtStartup(s)
 		if renewable {
 			maintainers = append(maintainers, maintainer)
@@ -86,15 +86,15 @@ type singleSecretMaintainer struct {
 	callbackChan chan<- UpdatedSecret
 	v            secretGetter
 	doneChan     chan<- bool
-	initialTtl   time.Duration
+	initialTTL   time.Duration
 }
 
-func (m *singleSecretMaintainer) setInitialTtl(ttl time.Duration) {
-	m.initialTtl = ttl
+func (m *singleSecretMaintainer) setInitialTTL(ttl time.Duration) {
+	m.initialTTL = ttl
 }
 
 func (m singleSecretMaintainer) start() {
-	d := m.initialTtl
+	d := m.initialTTL
 	for {
 		w := getWaitDuration(d)
 		time.Sleep(w)
@@ -139,7 +139,7 @@ func (m singleSecretMaintainer) getSecret() (UpdatedSecret, bool, time.Duration,
 			renewable = true
 			ttl2 := time.Duration(innerSecret.LeaseDuration) * time.Millisecond
 			if ttl2 < ttl {
-				ttl = ttl
+				ttl = ttl2
 			}
 		}
 	}

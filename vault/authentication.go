@@ -39,7 +39,7 @@ func (vault *Vault) Authenticate() error {
 	}
 
 	if err := vault.Client.Do(req, &vault.Token); err != nil {
-		return err
+		return errors.Wrap(err, "while authenticating to Vault")
 	}
 
 	return nil

@@ -1,26 +1,29 @@
 package vault
 
 import (
+	"testing"
+
+	"github.com/hafslundnett/hn-config-lib-go/env"
 	"github.com/hafslundnett/hn-config-lib-go/testing/assert"
 	"github.com/hafslundnett/hn-config-lib-go/testing/mock"
-	"testing"
 )
 
-func Test_NewConfig(t *testing.T) { //TODO: test kubernetes configuration
-	setEnv()
+func Test_NewConfig(t *testing.T) {
 	vault := Vault{}
 
 	//Test with no environment variables
+	env.Clear(envVars...)
 	err := vault.NewConfig()
 	assert.Err(t, err, "missing ROLE env var")
 
 	//Test with environment variables
-	setEnv("GITHUB_TOKEN", mock.Token)
+	env.Set("GITHUB_TOKEN", mock.Token)
 	err = vault.NewConfig()
 	assert.NoErr(t, err)
 
 	//Test with k8 environment variables
-	setEnv("MOUNT_PATH", mock.Path, "SERVICE_ACCOUNT_PATH", mock.Path, "ROLE", mock.Role)
+	env.Clear("GITHUB_TOKEN")
+	env.Set("MOUNT_PATH", mock.Path, "SERVICE_ACCOUNT_PATH", mock.Path, "ROLE", mock.Role)
 	err = vault.NewConfig()
 	assert.NoErr(t, err)
 }

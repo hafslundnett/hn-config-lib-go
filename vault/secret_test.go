@@ -1,17 +1,20 @@
 package vault
 
 import (
+	"testing"
+
 	"github.com/hafslundnett/hn-config-lib-go/testing/assert"
 	"github.com/hafslundnett/hn-config-lib-go/testing/mock"
-	"testing"
 )
 
 func Test_GetSecret(t *testing.T) {
-	setEnv("GITHUB_TOKEN", mock.Token)
-
 	vault, err := New()
-	assert.Err(t, err, "while do-ing http request:")
+	assert.NoErr(t, err)
 
-	_, err = vault.GetSecret(mock.Path)
-	assert.Err(t, err, "while do-ing http request:")
+	secret, err := vault.GetSecret(mock.Path)
+	assert.Err(t, err, "403 Forbidden")
+
+	if secret != nil { // Better test when available
+		t.Error("secret should be nil")
+	}
 }
