@@ -9,26 +9,25 @@ import (
 
 // Token is used for authenticating Vault requests
 type Token struct {
-	Auth          Auth     `json:"auth"`
-	Metadata      Metadata `json:"metadata"`
-	LeaseDuration int      `json:"lease_duration"`
-	Renewable     bool     `json:"renewable"`
+	RequestID     string `json:"request_id"`
+	LeaseID       string `json:"lease_id"`
+	LeaseDuration int    `json:"lease_duration"`
+	Renewable     bool   `json:"renewable"`
+	Auth          Auth   `json:"auth"`
 }
 
 // Auth contains the token information for authenticating Vault requests
 type Auth struct {
-	ClientToken string   `json:"client_token"`
-	Accessor    string   `json:"accessor"`
-	Policies    []string `json:"policies"`
-}
-
-// Metadata contains important metadata for the Vault Token
-type Metadata struct {
-	Role                     string `json:"role"`
-	ServiceAccountName       string `json:"service_account_name"`
-	ServiceAccountNamespace  string `json:"service_account_namespace"`
-	ServiceAccountSecretName string `json:"service_account_secret_name"`
-	ServiceAccountUID        string `json:"service_account_uid"`
+	ClientToken   string                 `json:"client_token"`
+	TokenType     string                 `json:"token_type"`
+	Accessor      string                 `json:"accessor"`
+	EntityID      string                 `json:"entity_id"`
+	LeaseDuration int                    `json:"lease_duration"`
+	Renewable     bool                   `json:"renewable"`
+	Orphan        bool                   `json:"orphan"`
+	Policies      []string               `json:"policies"`
+	TokenPolicies []string               `json:"token_policies"`
+	Metadata      map[string]interface{} `json:"metadata"`
 }
 
 // Authenticate uses supplied login information to authenticate to Vault and get an authentification token
@@ -39,7 +38,7 @@ func (vault *Vault) Authenticate() error {
 	}
 
 	if err := vault.Client.Do(req, &vault.Token); err != nil {
-		return errors.Wrap(err, "while authenticating to Vault")
+		return errors.Wrapf(err, "while authenticating to Vault at %s", req.URL)
 	}
 
 	return nil
