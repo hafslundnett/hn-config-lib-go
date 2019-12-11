@@ -21,6 +21,9 @@ func Test_Set(t *testing.T) {
 		vars map[string]string
 	}{
 		{
+			nil,
+		},
+		{
 			vars: map[string]string{
 				fields[0]: mock.Addr,
 				fields[1]: mock.Token,

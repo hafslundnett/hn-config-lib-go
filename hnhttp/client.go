@@ -12,12 +12,15 @@ import (
 	"golang.org/x/net/http2"
 )
 
-// Client expl
+// Client is a holder for an ordinary http.Client, with additional functionality.
 type Client struct {
 	HTTP *http.Client
 }
 
-// NewClient expl
+// NewClient sets up a new hnhttp.Client.
+// The client has http.Client's default values with the following exceptions:
+// HTTP2 is forced; TLS12 or greater; additional RootCAs from provided files and from predefined authorities.
+// Takes none or more optional files to add as certificates to the client.
 func NewClient(certificates ...string) (*Client, error) {
 	pool, err := cert.MakePool(certificates...)
 	if err != nil {
@@ -44,7 +47,7 @@ func NewClient(certificates ...string) (*Client, error) {
 	return client, nil
 }
 
-// Do is a wrapper around http.do that error checks and decodes the response.
+// Do is a wrapper around http.do that error checks and decodes the response to the (optional) destination.
 // 'dst' is an optional destination pointer that must be either implementing io.writer or a struct to be populated by JSON data.
 // As 'dst' is a variadic argument, multiple 'dst' may be passed. However; any additional destinations are ignored with no error.
 func (client Client) Do(req *http.Request, dst ...interface{}) error {
@@ -61,7 +64,9 @@ func (client Client) Do(req *http.Request, dst ...interface{}) error {
 	return nil
 }
 
-// Get expl
+// Get is a simplified way to do a HTTP GET request by just having a url and (optionally) a destination for the response.
+// 'dst' is an optional destination pointer that must be either implementing io.writer or a struct to be populated by JSON data.
+// As 'dst' is a variadic argument, multiple 'dst' may be passed. However; any additional destinations are ignored with no error.
 func (client Client) Get(url string, dst ...interface{}) error {
 	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
@@ -76,7 +81,7 @@ func (client Client) Get(url string, dst ...interface{}) error {
 	return nil
 }
 
-// PostForm is a wrapper around http.PostForm that takes multiple kinds of input, and makes error checks and decodes the response.
+// PostForm is a wrapper around http.PostForm that takes a map as input, and makes error checks and decodes the response to the (optional) destination.
 // 'dst' is an optional destination pointer that must be either implementing io.writer or a struct to be populated by JSON data.
 // As 'dst' is a variadic argument, multiple 'dst' may be passed. However; any additional destinations are ignored with no error.
 func (client Client) PostForm(url string, data map[string][]string, dst ...interface{}) error {

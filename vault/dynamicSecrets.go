@@ -61,12 +61,15 @@ func RegisterDynamicSecretDependency(dep SecretsSubscriber, vlt *Vault, dc chan<
 			v:            vlt,
 			doneChan:     dc,
 		}
+
 		s, renewable, ttl, err := maintainer.getSecret()
 		if err != nil {
 			log.Fatal(err)
 		}
+
 		maintainer.setInitialTTL(ttl)
 		dep.ReceiveAtStartup(s)
+
 		if renewable {
 			maintainers = append(maintainers, maintainer)
 		}
@@ -120,6 +123,7 @@ func (m singleSecretMaintainer) doIteration() (time.Duration, bool) {
 func (m singleSecretMaintainer) getSecret() (UpdatedSecret, bool, time.Duration, error) {
 	ttl := time.Hour * 8760 // 1 year
 	renewable := false
+
 	secret, err := m.v.GetSecret(m.path)
 	if secret.Renewable {
 		renewable = true
@@ -129,6 +133,7 @@ func (m singleSecretMaintainer) getSecret() (UpdatedSecret, bool, time.Duration,
 		log.Printf("Error while getting secret %s :: %v", m.path, err)
 		return UpdatedSecret{}, false, time.Second * 0, err
 	}
+
 	secrets := map[string]*Secret{m.path: secret}
 	if sp, ok := secret.Data["secret-path"]; ok {
 		innerSecret, err := m.v.GetSecret(sp)

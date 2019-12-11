@@ -1,7 +1,6 @@
 package cert
 
 import (
-	"log"
 	"testing"
 
 	"github.com/hafslundnett/hn-config-lib-go/testing/assert"
@@ -30,16 +29,7 @@ func Test_MakePool(t *testing.T) {
 	pool, err = MakePool(pemFile)
 	assert.NoErr(t, err)
 
-	/**
-	if pool.Certs.Subjects()[0][0] != 48 {
-		t.Fatalf("Incorrect information in pool")
+	if pool == nil {
+		t.Fatal("Pool is nil")
 	}
-	if pool.Certs.Subjects()[0][1] != 109 {
-		t.Fatalf("Incorrect information in pool")
-	}
-	if pool.Certs.Subjects()[0][2] != 49 {
-		t.Fatalf("Incorrect information in pool")
-	}
-	*/
-	log.Println(pool.Certs)
 }

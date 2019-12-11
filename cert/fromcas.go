@@ -2,7 +2,8 @@ package cert
 
 import "github.com/pkg/errors"
 
-// AppendCAs adds select known, trusted certificate authorities to the pool
+// AppendCAs adds select known, trusted root certificate authorities to the pool
+// Currently adds: Comodo
 func (pool Pool) AppendCAs() error {
 	if ok := pool.Certs.AppendCertsFromPEM([]byte(comodo)); !ok {
 		return errors.New("failed to parse const Comodo root certificate")
@@ -11,6 +12,8 @@ func (pool Pool) AppendCAs() error {
 	return nil
 }
 
+// Comodo public root level certificate. Expires in 2038
+// Source https://support.comodo.com/index.php?/Knowledgebase/Article/View/969/108/root-comodo-rsa-certification-authority-sha-2
 const comodo = `-----BEGIN CERTIFICATE-----
 MIIF2DCCA8CgAwIBAgIQTKr5yttjb+Af907YWwOGnTANBgkqhkiG9w0BAQwFADCB
 hTELMAkGA1UEBhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4G

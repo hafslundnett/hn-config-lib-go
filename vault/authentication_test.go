@@ -28,6 +28,8 @@ func Test_Authenticate(t *testing.T) {
 	// Test with invalid k8 token
 	vault.GithubToken = ""
 	vault.K8Role = mock.Role
+	vault.K8MountPath = mock.Path
+	vault.K8ServicePath = mock.Path
 
 	err = vault.Authenticate()
 	assert.Err(t, err, "while converting token to buffer")

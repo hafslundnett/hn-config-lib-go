@@ -12,6 +12,7 @@ import (
 func Test_New(t *testing.T) {
 	env.Save(envVars...)
 	env.Clear(envVars...)
+	defer env.Reset()
 
 	// Test broken config
 	vault, err := New()

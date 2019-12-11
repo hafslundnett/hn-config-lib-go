@@ -9,6 +9,8 @@ import (
 )
 
 func Test_NewConfig(t *testing.T) {
+	env.Save(envVars...)
+	defer env.Reset()
 	vault := Vault{}
 
 	//Test with no environment variables

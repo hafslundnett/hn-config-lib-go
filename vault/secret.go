@@ -8,7 +8,7 @@ import (
 
 // Secret contains all data from a Vault secret
 type Secret struct {
-	RequestID     string            `json:"client_token"`
+	RequestID     string            `json:"request_id"`
 	LeaseID       string            `json:"lease_id"`
 	Renewable     bool              `json:"renewable"`
 	LeaseDuration int               `json:"lease_duration"`

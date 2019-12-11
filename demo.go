@@ -59,7 +59,7 @@ func hidClientDemo() *http.Request {
 	return myRequest
 }
 
-func hidAPIdemo(r *http.Request) {
+func hidAPIdemo(myRequest *http.Request) {
 	// Make reusable HID item
 	myHID, err := hid.New()
 	if err != nil {
@@ -67,10 +67,9 @@ func hidAPIdemo(r *http.Request) {
 	}
 
 	// Verify if token is valid. Invalid token throws an error
-	err = myHID.AuthorizeRequest(r, "audience", "scope")
+	err = myHID.AuthorizeRequest(myRequest, "audience", "scope")
 	if err != nil {
-		log.Println("Token is invalid")
-		log.Fatal(err)
+		log.Fatal("Token is invalid")
 	}
 
 	// Handle the request

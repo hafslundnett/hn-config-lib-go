@@ -14,12 +14,11 @@ type Pool struct {
 // MakePool copies the system CA pool and appends provided certificates, if any.
 // Accepts zero or more certificate files as arguments.
 // Empty strings are ignored
-// NOTE: Cannot get certificates on Windows, therefore a certificate file is required!
 func MakePool(certFiles ...string) (*Pool, error) {
 	pool := new(Pool)
 	var err error
 
-	pool.Certs, err = x509.SystemCertPool() // Returns pool as nil, and an error on Windows
+	pool.Certs, err = x509.SystemCertPool() // Returns pool as nil and an error on Windows
 	if err != nil {
 		pool.Certs = x509.NewCertPool() // Use an empty one instead. No OS provided certs from windows
 	}
