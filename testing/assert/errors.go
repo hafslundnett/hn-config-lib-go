@@ -22,3 +22,13 @@ func Err(t *testing.T, err error, errSubstr string) {
 		t.Fatalf("Unexpected error, got: %v, wanted error containing substing: %s", err, errSubstr)
 	}
 }
+
+// WantErr if switching between Err and NoErr with a bool is needed.
+// Intended for use in table-based testing
+func WantErr(t *testing.T, want bool, err error, errSubstr string) {
+	if want {
+		Err(t, err, errSubstr)
+	} else {
+		NoErr(t, err)
+	}
+}
