@@ -11,18 +11,15 @@ type Token struct {
 }
 
 // GetToken exp
-func (hid HID) GetToken(user, secret string) (*Token, error) {
+func (hid HID) GetToken(user, secret string) (token *Token, err error) {
 	form := map[string][]string{
 		"client_id":     []string{user},
 		"client_secret": []string{secret},
 		"grant_type":    []string{"client_credentials"},
 	}
 
-	var token Token
-	err := hid.Client.PostForm(hid.TokenEP, form, &token)
-	if err != nil {
-		return nil, errors.Wrap(err, "while getting token from HID")
-	}
+	err = hid.Client.PostForm(hid.TokenEP, form, &token)
+	err = errors.Wrap(err, "while getting token from HID")
 
-	return &token, nil
+	return
 }

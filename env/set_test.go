@@ -52,7 +52,7 @@ func Test_Set(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		s := mapToSlice(test.vars)
+		s := mapToSlice(test.vars) // Todo: use util
 		err := Set(s...)
 		assert.NoErr(t, err)
 
@@ -62,6 +62,7 @@ func Test_Set(t *testing.T) {
 	}
 }
 
+// TODO: remove
 func mapToSlice(m map[string]string) []string {
 	var s []string
 	for k, v := range m {

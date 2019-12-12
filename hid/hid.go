@@ -31,8 +31,7 @@ func New() (*HID, error) {
 }
 
 // NewClient returns a http client for use with HID
-func (hid *HID) NewClient() error {
-	var err error
+func (hid *HID) NewClient() (err error) {
 	hid.Client, err = hnhttp.NewClient()
-	return err
+	return
 }

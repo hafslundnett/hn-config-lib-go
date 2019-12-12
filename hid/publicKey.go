@@ -43,14 +43,12 @@ func keyFunc(token *jwt.Token) (interface{}, error) {
 	return jwt.ParseRSAPublicKeyFromPEM([]byte(cert))
 }
 
-func getPemCert(token *jwt.Token) (string, error) {
-	var cert string
-
+func getPemCert(token *jwt.Token) (cert string, err error) {
 	for _, k := range pks.Keys {
 		if kid, ok := token.Header["kid"].(string); ok {
 			if kid == k.KeyID {
 				cert = "-----BEGIN CERTIFICATE-----\n" + k.X5C[0] + "\n-----END CERTIFICATE-----"
-				return cert, nil
+				return
 			}
 		} else {
 			return "", errors.New("expecting JWT header to have string kid")

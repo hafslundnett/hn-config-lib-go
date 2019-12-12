@@ -30,8 +30,7 @@ func New() (*Vault, error) {
 }
 
 // NewClient returns a http client configured according to the supplied Config, for use with Vault
-func (vault *Vault) NewClient() error {
-	var err error
+func (vault *Vault) NewClient() (err error) {
 	vault.Client, err = hnhttp.NewClient(vault.Config.PemCert)
-	return err
+	return
 }

@@ -17,8 +17,7 @@ type Secret struct {
 
 // GetSecret returns the secret from the provided path
 func (vault Vault) GetSecret(path string) (*Secret, error) {
-	prefix := "" //"secret/"?
-	url := makeURL(vault.Config.Addr, prefix+path)
+	url := makeURL(vault.Config.Addr, path)
 
 	req, err := secretsReq(url, vault.Token.Auth.ClientToken)
 	if err != nil {

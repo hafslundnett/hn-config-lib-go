@@ -6,7 +6,7 @@ import (
 	"github.com/pkg/errors"
 )
 
-// Pool expl
+// Pool is a storage for RootCAs, used in http requests
 type Pool struct {
 	Certs *x509.CertPool
 }
