@@ -12,6 +12,11 @@ import (
 	"golang.org/x/net/http2"
 )
 
+// Libhttp is a holder for an ordinary http.Client, with additional functionality.
+type Libhttp interface {
+	Do(req *http.Request, dst ...interface{}) (*http.Response, error)
+}
+
 // Client is a holder for an ordinary http.Client, with additional functionality.
 type Client struct {
 	HTTP *http.Client
