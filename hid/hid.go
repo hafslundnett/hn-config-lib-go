@@ -1,13 +1,13 @@
 package hid
 
 import (
-	"github.com/hafslundnett/hn-config-lib-go/hnhttp"
+	"github.com/hafslundnett/hn-config-lib-go/libhttp"
 )
 
 // HID expl
 type HID struct {
 	Config
-	Client *hnhttp.Client
+	Client *libhttp.Client
 	PKS    PublicKeySet
 }
 
@@ -32,6 +32,6 @@ func New() (*HID, error) {
 
 // NewClient returns a http client for use with HID
 func (hid *HID) NewClient() (err error) {
-	hid.Client, err = hnhttp.NewClient()
+	hid.Client, err = libhttp.NewClient()
 	return
 }

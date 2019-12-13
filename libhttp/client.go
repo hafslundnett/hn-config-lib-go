@@ -17,7 +17,7 @@ type Client struct {
 	HTTP *http.Client
 }
 
-// NewClient sets up a new hnhttp.Client.
+// NewClient sets up a new libhttp.Client.
 // The client has http.Client's default values with the following exceptions:
 // HTTP2 is forced; TLS12 or greater; additional RootCAs from provided files and from predefined authorities.
 // Takes none or more optional files to add as certificates to the client.

@@ -1,11 +1,11 @@
 package vault
 
-import "github.com/hafslundnett/hn-config-lib-go/hnhttp"
+import "github.com/hafslundnett/hn-config-lib-go/libhttp"
 
 // Vault contains all information needed to get and interact with Vault secrets, after initial configuration.
 type Vault struct {
 	Config
-	Client *hnhttp.Client
+	Client *libhttp.Client
 	Token  Token
 }
 
@@ -31,6 +31,6 @@ func New() (*Vault, error) {
 
 // NewClient returns a http client configured according to the supplied Config, for use with Vault
 func (vault *Vault) NewClient() (err error) {
-	vault.Client, err = hnhttp.NewClient(vault.Config.PemCert)
+	vault.Client, err = libhttp.NewClient(vault.Config.PemCert)
 	return
 }
