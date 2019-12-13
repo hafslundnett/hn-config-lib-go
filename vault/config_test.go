@@ -8,24 +8,39 @@ import (
 	"github.com/hafslundnett/hn-config-lib-go/testing/mock"
 )
 
-func Test_NewConfig(t *testing.T) {
-	env.Save(envVars...)
-	defer env.Reset()
-	vault := Vault{}
+func TestVault_NewConfig(t *testing.T) {
+	tests := []struct {
+		name      string
+		args      map[string]string
+		vault     *Vault
+		wantErr   bool
+		errWanted string
+	}{
+		{
+			name:      "no environment variables",
+			args:      map[string]string{},
+			vault:     &Vault{},
+			wantErr:   true,
+			errWanted: "missing ROLE env var",
+		}, {
+			name:    "github environment variables",
+			args:    map[string]string{"GITHUB_TOKEN": mock.Token},
+			vault:   &Vault{},
+			wantErr: false,
+		}, {
+			name:    "k8 environment variables",
+			args:    map[string]string{"MOUNT_PATH": mock.Path, "SERVICE_ACCOUNT_PATH": mock.Path, "ROLE": mock.Role},
+			vault:   &Vault{},
+			wantErr: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			env.Clear(envVars...)
+			env.SetMap(tt.args)
 
-	//Test with no environment variables
-	env.Clear(envVars...)
-	err := vault.NewConfig()
-	assert.Err(t, err, "missing ROLE env var")
-
-	//Test with environment variables
-	env.Set("GITHUB_TOKEN", mock.Token)
-	err = vault.NewConfig()
-	assert.NoErr(t, err)
-
-	//Test with k8 environment variables
-	env.Clear("GITHUB_TOKEN")
-	env.Set("MOUNT_PATH", mock.Path, "SERVICE_ACCOUNT_PATH", mock.Path, "ROLE", mock.Role)
-	err = vault.NewConfig()
-	assert.NoErr(t, err)
+			err := tt.vault.NewConfig()
+			assert.WantErr(t, tt.wantErr, err, tt.errWanted)
+		})
+	}
 }
