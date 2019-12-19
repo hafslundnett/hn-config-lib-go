@@ -1,17 +1,17 @@
-# hn-config-lib-go  
+# HN Config Lib GO  
   
-GO-implementation of Vault for HafslundNett  
+GO-implementation of Vault, HID and additional related helper libraries for HafslundNett  
   
-UNDER DEVELOPMENT  
-  
-To run: Make sure environment variables are set before running.  
-  
+UNDER DEVELOPMENT
+
+Examples:
+Make sure environment variables are set before running.  
+See demo.go for a more comprehensive example
+
+Vault example:
 VAULT_ADDR: The address of the vault. If not set (or empty) it will default to localhost.  
 GITHUB_TOKEN: A github login token. If not set (or empty) it will default to use K8 to login.  
-VAULT_CACERT: If the Vault does not have a publicly signed Ca certificate, you may set VAULT_CACERT as the file location of the self-signed certificate for the vault server (.pem format).  
-  
-Example usage:  
-(Requires environment variables to be set)  
+VAULT_CACERT: If the Vault does not have a publicly signed Ca certificate, you may set VAULT_CACERT as the file location of the self-signed certificate for the vault server (.pem format).
 
 ```GO
 import (

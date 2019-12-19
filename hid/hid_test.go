@@ -9,7 +9,7 @@ import (
 
 func Test_New(t *testing.T) {
 	// test with defaults. Fails successfully if HID is not running locally
-	env.Set("HID_ADDR", "")
+	env.Set("HID_ADDR", "") //TODO: err
 	testHID, err := New()
 	assert.Err(t, err, "while renewing HID public key set")
 
@@ -22,4 +22,5 @@ func Test_New(t *testing.T) {
 
 	assert.Result(t, testHID.Addr, addr)
 	assert.Result(t, testHID.JWKSuri, addr+"/.well-known/openid-configuration/jwks")
+	//TODO: reset env
 }

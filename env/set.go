@@ -6,7 +6,7 @@ import (
 	"github.com/pkg/errors"
 )
 
-// Set enables setting multiple environment variables by putting the after one another.
+// Set enables setting multiple environment variables by putting them after one another.
 // Example: env.FromStrings("USER", "guest", "PASSWORD", "qwer1234")
 func Set(vars ...string) error {
 	for i := 0; i < len(vars); i += 2 {
@@ -19,7 +19,7 @@ func Set(vars ...string) error {
 	return nil
 }
 
-// SetMap enables setting multiple environment variables from a map
+// SetMap enables setting multiple environment variables from a map.
 // Example: m := map[string]string{"USER": "guest", "PASSWORD": "qwer1234"}
 // env.FromMap(m)
 func SetMap(vars map[string]string) error {

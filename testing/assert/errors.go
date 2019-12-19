@@ -26,6 +26,7 @@ func Err(t *testing.T, err error, errSubstr string) {
 // WantErr if switching between Err and NoErr with a bool is needed.
 // Intended for use in table-based testing
 func WantErr(t *testing.T, want bool, err error, errSubstr string) {
+	t.Helper()
 	if want {
 		Err(t, err, errSubstr)
 	} else {

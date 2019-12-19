@@ -38,7 +38,7 @@ func Test_New(t *testing.T) {
 }
 
 func Test_NewClient(t *testing.T) {
-	env.Clear(envVars...)
+	env.Clear(envVars...) //TODO: err
 	env.Set("VAULT_CACERT", mock.File, "GITHUB_TOKEN", mock.Token)
 	vault := Vault{}
 
@@ -53,4 +53,5 @@ func Test_NewClient(t *testing.T) {
 	vault.PemCert = ""
 	err = vault.NewClient()
 	assert.NoErr(t, err)
+	//TODO: reset env
 }

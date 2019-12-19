@@ -9,6 +9,9 @@ import (
 )
 
 func TestVault_NewConfig(t *testing.T) {
+	env.Save(envVars...)
+	defer env.Reset()
+
 	tests := []struct {
 		name      string
 		args      map[string]string
@@ -36,8 +39,8 @@ func TestVault_NewConfig(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			env.Clear(envVars...)
-			env.SetMap(tt.args)
+			env.Clear(envVars...) //TODO: err
+			env.SetMap(tt.args)   //TODO: err
 
 			err := tt.vault.NewConfig()
 			assert.WantErr(t, tt.wantErr, err, tt.errWanted)

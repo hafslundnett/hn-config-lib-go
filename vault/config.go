@@ -29,7 +29,7 @@ func (vault *Vault) NewConfig() error {
 	if githubToken == "" {
 		k8ServicePath := os.Getenv("SERVICE_ACCOUNT_PATH")
 		if k8ServicePath == "" {
-			k8ServicePath = "/var/run/secrets/kubernetes.io/serviceaccount/token" //TODO: verify valid default value
+			k8ServicePath = "/var/run/secrets/kubernetes.io/serviceaccount/token"
 		}
 
 		k8MountPath := os.Getenv("MOUNT_PATH")
