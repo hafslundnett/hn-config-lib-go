@@ -73,3 +73,9 @@ func authBody(cfg Config) (io.Reader, string, error) {
 	body, err := k8Login(cfg.K8ServicePath, cfg.K8Role)
 	return body, path, err
 }
+
+// makeURL returns a correctly formatted url for Vault http requests
+func makeURL(address, path string) string {
+	version := "/v1/"
+	return address + version + path
+}

@@ -13,12 +13,12 @@ func (hid *HID) AuthorizeRequest(r *http.Request, audience, scope string) error 
 
 	token, err := hid.Authenticate(rawToken)
 	if err != nil {
-		return err
+		return errors.Wrap(err, "while authenticating")
 	}
 
 	err = VerifyClaims(token, hid.Addr, audience, scope)
 	if err != nil {
-		return err
+		return errors.Wrap(err, "while verifying claims")
 	}
 
 	return nil

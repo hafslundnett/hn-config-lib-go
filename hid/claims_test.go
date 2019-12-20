@@ -1,28 +1,17 @@
 package hid
 
 import (
-	"net/http"
 	"os"
 	"testing"
 	"time"
 
 	"github.com/hafslundnett/hn-config-lib-go/testing/assert"
 	"github.com/hafslundnett/hn-config-lib-go/testing/mock"
-
-	"github.com/dgrijalva/jwt-go"
 )
 
-// at overrides time value for tests and restores default value after
-func at(t time.Time, f func()) {
-	jwt.TimeFunc = func() time.Time {
-		return t
-	}
-	f()
-	jwt.TimeFunc = time.Now
-} //time.Unix(0, 0)
-
-func Test_HID_AuthorizeRequest(t *testing.T) {
+func Test_VerifyClaims(t *testing.T) {
 	type args struct {
+		issuer   string
 		audience string
 		scope    string
 	}
@@ -36,7 +25,7 @@ func Test_HID_AuthorizeRequest(t *testing.T) {
 		{
 			name:      "invalid audience",
 			time:      time.Now().Add(time.Minute * 30),
-			args:      args{mock.ID, mock.ID},
+			args:      args{mock.Addr, mock.ID, mock.ID},
 			wantErr:   true,
 			errWanted: "Invalid audience",
 		},
@@ -50,11 +39,10 @@ func Test_HID_AuthorizeRequest(t *testing.T) {
 				token, err := hid.GetToken(os.Getenv("TEST_HID_ID"), os.Getenv("TEST_HID_SECRET"))
 				assert.NoErr(t, err)
 
-				req, err := http.NewRequest("GET", mock.Addr, nil)
+				jwt, err := hid.Authenticate(token.Raw)
 				assert.NoErr(t, err)
-				req.Header.Add("Authorization", token.Raw)
 
-				err = hid.AuthorizeRequest(req, tt.args.audience, tt.args.scope)
+				err = VerifyClaims(jwt, tt.args.issuer, tt.args.audience, tt.args.scope)
 				assert.WantErr(t, tt.wantErr, err, tt.errWanted)
 			})
 		})

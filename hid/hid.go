@@ -32,6 +32,6 @@ func New() (*HID, error) {
 
 // NewClient returns a http client for use with HID
 func (hid *HID) NewClient() (err error) {
-	hid.Client, err = libhttp.NewClient()
+	hid.Client, err = libhttp.NewClient(hid.Config.PemCert)
 	return
 }

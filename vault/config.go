@@ -39,7 +39,7 @@ func (vault *Vault) NewConfig() error {
 
 		k8Role := os.Getenv("ROLE")
 		if k8Role == "" {
-			return errors.New("missing ROLE env var")
+			return errors.New("missing either ROLE or GITHUB_TOKEN env var")
 		}
 
 		vault.K8ServicePath = k8ServicePath
