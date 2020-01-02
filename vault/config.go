@@ -6,38 +6,42 @@ import (
 	"github.com/pkg/errors"
 )
 
+var envars = map[string]string{
+	"addr":     "VAULT_ADDR",
+	"cert":     "VAULT_CACERT",
+	"ghToken":  "GITHUB_TOKEN",
+	"servPath": "SERVICE_ACCOUNT_PATH",
+	"mntPath":  "MOUNT_PATH",
+	"role":     "ROLE",
+}
+
 // Config contains the configuration information needed to do the initial setup of a Vault connection
 type Config struct {
-	Addr          string
-	PemCert       string
+	*Conf
 	GithubToken   string
 	K8ServicePath string
 	K8MountPath   string
 	K8Role        string
 }
 
-// NewConfig reads configuration information from provided file and returns a config struct containing this information.
-func (vault *Vault) NewConfig() error {
-	addr := os.Getenv("VAULT_ADDR")
-	if addr == "" {
-		addr = "https://127.0.0.1:8200"
-	}
+// Configure reads configuration information from provided file and returns a config struct containing this information.
+func (vault Vault) Configure(c *Conf) error {
+	vault.Conf = c
 
-	pemCert := os.Getenv("VAULT_CACERT")
-	githubToken := os.Getenv("GITHUB_TOKEN")
+	vault.GithubToken = os.Getenv(envars["ghToken"])
+	if vault.GithubToken == "" {
 
-	if githubToken == "" {
-		k8ServicePath := os.Getenv("SERVICE_ACCOUNT_PATH")
+		k8ServicePath := os.Getenv(envars["servPath"])
 		if k8ServicePath == "" {
 			k8ServicePath = "/var/run/secrets/kubernetes.io/serviceaccount/token"
 		}
 
-		k8MountPath := os.Getenv("MOUNT_PATH")
+		k8MountPath := os.Getenv(envars["mntPath"])
 		if k8MountPath == "" {
 			k8MountPath = "kubernetes"
 		}
 
-		k8Role := os.Getenv("ROLE")
+		k8Role := os.Getenv(envars["role"])
 		if k8Role == "" {
 			return errors.New("missing either ROLE or GITHUB_TOKEN env var")
 		}
@@ -47,10 +51,6 @@ func (vault *Vault) NewConfig() error {
 		vault.K8Role = k8Role
 
 	}
-
-	vault.Addr = addr
-	vault.PemCert = pemCert
-	vault.GithubToken = githubToken
 
 	return nil
 }

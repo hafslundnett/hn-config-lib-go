@@ -9,7 +9,7 @@ import (
 	"github.com/hafslundnett/hn-config-lib-go/testing/mock"
 )
 
-func Test_Vault_Authenticate(t *testing.T) {
+func Test_Vault_GetAccess(t *testing.T) {
 	err := env.Save(envVars...)
 	assert.NoErr(t, err)
 
@@ -42,12 +42,12 @@ func Test_Vault_Authenticate(t *testing.T) {
 			}
 
 			vault := &Vault{}
-			err := vault.NewConfig()
+			err := vault.Configure()
 			assert.NoErr(t, err)
-			err = vault.NewClient()
+			err = vault.MakeClient()
 			assert.NoErr(t, err)
 
-			err = vault.Authenticate()
+			err = vault.GetAccess()
 			assert.WantErr(t, tt.wantErr, err, tt.errWanted)
 
 			if !tt.wantErr && vault.Token.Auth.Accessor == "" {

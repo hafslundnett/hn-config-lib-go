@@ -30,8 +30,9 @@ func New() (*HID, error) {
 	return hid, nil
 }
 
-// NewClient returns a http client for use with HID
-func (hid *HID) NewClient() (err error) {
-	hid.Client, err = libhttp.NewClient(hid.Config.PemCert)
+
+// MakeClient returns a http client configured according to the supplied Config, for use with HID
+func (hid *HID) MakeClient() (err error) {
+	vault.Client, err = libhttp.NewClient(hid.Config.PemCert)
 	return
 }

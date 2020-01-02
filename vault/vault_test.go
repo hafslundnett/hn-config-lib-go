@@ -8,26 +8,17 @@ import (
 	"github.com/hafslundnett/hn-config-lib-go/testing/mock"
 )
 
-var envVars = []string{
-	"VAULT_ADDR",
-	"VAULT_CACERT",
-	"GITHUB_TOKEN",
-	"SERVICE_ACCOUNT_PATH",
-	"MOUNT_PATH",
-	"ROLE",
-}
-
 // replaceEnv compacts environment variables handling to increase readability of tests.
 func replaceEnv(t *testing.T, vars []string) {
 	t.Helper()
-	err := env.Clear(envVars...)
+	err := env.Clear(envars...)
 	assert.NoErr(t, err)
 	err = env.Set(vars...)
 	assert.NoErr(t, err)
 }
 
 func Test_New(t *testing.T) {
-	err := env.Save(envVars...)
+	err := env.Save(envars...)
 	assert.NoErr(t, err)
 
 	tests := []struct {
@@ -99,7 +90,7 @@ func Test_Vault_NewClient(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			err := tt.vault.NewClient()
+			err := tt.vault.MakeClient()
 			assert.WantErr(t, tt.wantErr, err, tt.errWanted)
 
 			if !tt.wantErr && tt.vault.Client == nil {

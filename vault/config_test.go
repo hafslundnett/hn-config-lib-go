@@ -37,7 +37,7 @@ func Test_Vault_NewConfig(t *testing.T) {
 			replaceEnv(t, tt.envslice)
 
 			vault := &Vault{}
-			err = vault.NewConfig()
+			err = vault.Configure()
 			assert.WantErr(t, tt.wantErr, err, tt.errWanted)
 		})
 	}
