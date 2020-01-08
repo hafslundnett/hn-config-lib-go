@@ -22,10 +22,6 @@ type SecretsSubscriber interface {
 	StartSecretsListener()
 }
 
-type secretGetter interface {
-	GetSecret(path string) (*Secret, error)
-}
-
 // SecretSubscriptionSpec a specification of the paths to the secrets that a
 // subscriber is interested in
 type SecretSubscriptionSpec struct {
@@ -87,7 +83,7 @@ func RegisterDynamicSecretDependency(dep SecretsSubscriber, vlt *Vault, dc chan<
 type singleSecretMaintainer struct {
 	path         string
 	callbackChan chan<- UpdatedSecret
-	v            secretGetter
+	v            SecretsManager
 	doneChan     chan<- bool
 	initialTTL   time.Duration
 }

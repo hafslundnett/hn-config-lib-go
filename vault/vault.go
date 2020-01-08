@@ -6,8 +6,9 @@ import (
 	"github.com/hafslundnett/hn-config-lib-go/service"
 )
 
-// SecretStorage expl
-type SecretStorage interface {
+// SecretsManager expl
+type SecretsManager interface {
+	GetSecret(path string) (*Secret, error)
 }
 
 // Vault contains all information needed to get and interact with Vault secrets, after initial configuration.
