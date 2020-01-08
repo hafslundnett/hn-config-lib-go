@@ -1,10 +1,17 @@
 package hid
 
 import (
+	"net/http"
 	"os"
 
 	"github.com/hafslundnett/hn-config-lib-go/service"
 )
+
+// IdentityManager expl
+type IdentityManager interface {
+	AuthorizeRequest(r *http.Request, audience, scope string) error
+	GetToken(user, secret string) (token *Token, err error)
+}
 
 // HID expl
 type HID struct {

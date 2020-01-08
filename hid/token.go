@@ -10,7 +10,7 @@ type Token struct {
 	Exp   int    `json:"expires_in"`
 }
 
-// GetToken exp
+// GetToken provides the credentials of a user or service, and returns a token sending with requests to a service.
 func (hid HID) GetToken(user, secret string) (token *Token, err error) {
 	form := map[string][]string{
 		"client_id":     []string{user},
