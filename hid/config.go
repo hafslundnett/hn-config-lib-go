@@ -2,41 +2,52 @@ package hid
 
 import (
 	"os"
+
+	"github.com/hafslundnett/hn-config-lib-go/libhttp"
+	"github.com/pkg/errors"
 )
+
+const (
+	defDiscovery = "/.well-known/openid-configuration"
+	defJWKS      = "/.well-known/openid-configuration/jwks"
+	defTokenEP   = "/connect/token"
+)
+
+var envars = map[string]string{
+	"addr":      "HID_ADDR",
+	"cert":      "HID_CACERT",
+	"discovery": "HID_DISCOVERY",
+}
 
 // Config expl
 type Config struct {
 	Addr    string
-	PemCert string
 	JWKSuri string `json:"jwks_uri"`
 	TokenEP string `json:"token_endpoint"`
+
+	Client libhttp.Client
 }
 
-// NewConfig expl
-func (hid *HID) NewConfig() error {
-	hid.Addr = os.Getenv("HID_ADDR")
-	if hid.Addr == "" {
-		hid.Addr = "https://127.0.0.1"
+// Configure expl
+func (hid *HID) Configure(client libhttp.Client) error {
+	addr := os.Getenv(envars["addr"])
+	if addr == "" {
+		return errors.New("missing env var " + envars["addr"])
 	}
 
-	hid.PemCert = os.Getenv("HID_CACERT")
-	if hid.PemCert != "" {
-		err := hid.NewClient()
-		if err != nil {
-			return err
-		}
-	}
-
-	discovery := os.Getenv("HID_DISCOVERY")
+	discovery := os.Getenv(envars["discovery"])
 	if discovery == "" {
-		discovery = "/.well-known/openid-configuration"
+		discovery = defDiscovery
 	}
 
-	err := hid.Client.Get(hid.Addr+discovery, &hid)
+	err := client.Get(addr+discovery, &hid)
 	if err != nil {
-		hid.JWKSuri = hid.Addr + "/.well-known/openid-configuration/jwks"
-		hid.TokenEP = hid.Addr + "/connect/token"
+		hid.JWKSuri = addr + defJWKS
+		hid.TokenEP = addr + defTokenEP
 	}
+
+	hid.Addr = addr
+	hid.Client = client
 
 	return nil
 }

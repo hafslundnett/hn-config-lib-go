@@ -19,18 +19,6 @@ func Test_NewClient(t *testing.T) {
 	assert.NoErr(t, err)
 }
 
-func Test_checkRespCode(t *testing.T) {
-	resp := &http.Response{
-		StatusCode: 404,
-	}
-	err := checkRespCode(resp)
-	assert.Err(t, err, "http error, status 404")
-
-	resp.StatusCode = 200
-	err = checkRespCode(resp)
-	assert.NoErr(t, err)
-}
-
 func Test_Do(t *testing.T) {
 	client, err := NewClient()
 	assert.NoErr(t, err)
@@ -52,4 +40,30 @@ func Test_PostForm(t *testing.T) {
 
 	err = client.PostForm(mock.URL, form)
 	assert.Err(t, err, "while post-ing http request")
+}
+
+func Test_checkRespCode(t *testing.T) {
+	tests := []struct {
+		name      string
+		r         *http.Response
+		wantErr   bool
+		errWanted string
+	}{
+		{
+			name:      "response with error",
+			r:         &http.Response{StatusCode: 404},
+			wantErr:   true,
+			errWanted: "http error, status 404",
+		}, {
+			name:    "response without error",
+			r:       &http.Response{StatusCode: 200},
+			wantErr: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			err := checkRespCode(tt.r)
+			assert.WantErr(t, tt.wantErr, err, tt.errWanted)
+		})
+	}
 }

@@ -12,8 +12,15 @@ import (
 	"golang.org/x/net/http2"
 )
 
-// Client is a holder for an ordinary http.Client, with additional functionality.
-type Client struct {
+// Client expl
+type Client interface {
+	Do(req *http.Request, dst ...interface{}) error
+	Get(url string, dst ...interface{}) error
+	PostForm(url string, data map[string][]string, dst ...interface{}) error
+}
+
+// ClientHolder is a holder for an ordinary http.Client, with additional functionality.
+type ClientHolder struct {
 	HTTP *http.Client
 }
 
@@ -21,7 +28,7 @@ type Client struct {
 // The client has http.Client's default values with the following exceptions:
 // HTTP2 is forced; TLS12 or greater; additional RootCAs from provided files and from predefined authorities.
 // Takes none or more optional files to add as certificates to the client.
-func NewClient(certificates ...string) (*Client, error) {
+func NewClient(certificates ...string) (*ClientHolder, error) {
 	pool, err := cert.MakePool(certificates...)
 	if err != nil {
 		return nil, err
@@ -40,7 +47,7 @@ func NewClient(certificates ...string) (*Client, error) {
 		Transport: transport,
 	}
 
-	client := &Client{
+	client := &ClientHolder{
 		HTTP: httpClient,
 	}
 
@@ -50,7 +57,7 @@ func NewClient(certificates ...string) (*Client, error) {
 // Do is a wrapper around http.do that error checks and decodes the response to the (optional) destination.
 // 'dst' is an optional destination pointer that must be either implementing io.writer or a struct to be populated by JSON data.
 // As 'dst' is a variadic argument, multiple 'dst' may be passed. However; any additional destinations are ignored with no error.
-func (client Client) Do(req *http.Request, dst ...interface{}) error {
+func (client ClientHolder) Do(req *http.Request, dst ...interface{}) error {
 	resp, err := client.HTTP.Do(req)
 	if err != nil {
 		return errors.Wrapf(err, "while do-ing http request to %s", req.URL)
@@ -67,7 +74,7 @@ func (client Client) Do(req *http.Request, dst ...interface{}) error {
 // Get is a simplified way to do a HTTP GET request by just having a url and (optionally) a destination for the response.
 // 'dst' is an optional destination pointer that must be either implementing io.writer or a struct to be populated by JSON data.
 // As 'dst' is a variadic argument, multiple 'dst' may be passed. However; any additional destinations are ignored with no error.
-func (client Client) Get(url string, dst ...interface{}) error {
+func (client ClientHolder) Get(url string, dst ...interface{}) error {
 	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
 		return err
@@ -84,7 +91,7 @@ func (client Client) Get(url string, dst ...interface{}) error {
 // PostForm is a wrapper around http.PostForm that takes a map as input, and makes error checks and decodes the response to the (optional) destination.
 // 'dst' is an optional destination pointer that must be either implementing io.writer or a struct to be populated by JSON data.
 // As 'dst' is a variadic argument, multiple 'dst' may be passed. However; any additional destinations are ignored with no error.
-func (client Client) PostForm(url string, data map[string][]string, dst ...interface{}) error {
+func (client ClientHolder) PostForm(url string, data map[string][]string, dst ...interface{}) error {
 	resp, err := client.HTTP.PostForm(url, data)
 	if err != nil {
 		return errors.Wrapf(err, "while post-ing http request to %s", url)

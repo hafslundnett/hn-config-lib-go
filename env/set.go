@@ -9,7 +9,7 @@ import (
 // Set enables setting multiple environment variables by putting them after one another.
 // Example: env.FromStrings("USER", "guest", "PASSWORD", "qwer1234")
 func Set(vars ...string) error {
-	for i := 0; i < len(vars); i += 2 {
+	for i := 0; i+1 < len(vars); i += 2 {
 		err := os.Setenv(vars[i], vars[i+1])
 		if err != nil {
 			return errors.Wrapf(err, "while setting env var %s", vars[i])

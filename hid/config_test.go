@@ -1,52 +1,61 @@
 package hid
 
 import (
-	"log"
 	"testing"
 
 	"github.com/hafslundnett/hn-config-lib-go/env"
+	"github.com/hafslundnett/hn-config-lib-go/libhttp"
 	"github.com/hafslundnett/hn-config-lib-go/testing/assert"
 	"github.com/hafslundnett/hn-config-lib-go/testing/mock"
 )
 
-func Test_HID_NewConfig(t *testing.T) {
-	err := env.Save(envVars...)
+var testenv = []string{
+	envars["addr"],
+	envars["cert"],
+	envars["discovery"],
+}
+
+func Test_HID_Configure(t *testing.T) {
+	err := env.Save(testenv...)
 	assert.NoErr(t, err)
 
 	tests := []struct {
 		name      string
 		envslice  []string
+		Client    libhttp.Client
+		want      Config
 		wantErr   bool
 		errWanted string
 	}{
 		{
-			name:     "empty environment variables",
-			envslice: []string{},
+			name:      "no environment variables",
+			Client:    mock.Client,
+			want:      Config{},
+			wantErr:   true,
+			errWanted: "missing env var " + envars["addr"],
+		}, {
+			name:     "defaulting values",
+			envslice: []string{envars["addr"], mock.Addr},
+			Client:   mock.ClientForbidden,
+			want:     Config{mock.Addr, mock.Addr + defJWKS, mock.Addr + defTokenEP, mock.ClientForbidden},
 			wantErr:  false,
 		}, {
-			name:      "bad environment variables",
-			envslice:  []string{"HID_ADDR", mock.Addr, "HID_CACERT", mock.File, "HID_DISCOVERY", mock.Path},
-			wantErr:   true,
-			errWanted: "failed to read CA file \"" + mock.File + "\" from disk",
-		}, {
-			name:    "good environment variables",
-			wantErr: false,
+			name:     "with all environment variables",
+			envslice: []string{envars["addr"], mock.Addr, envars["discovery"], mock.Path},
+			Client:   mock.Client,
+			want:     Config{Addr: mock.Addr, Client: mock.Client},
+			wantErr:  false,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if tt.envslice != nil {
-				replaceEnv(t, tt.envslice)
-			}
+			replaceEnv(t, tt.envslice)
 
 			hid := new(HID)
-			hid.NewClient()
-			err = hid.NewConfig()
-			log.Println(hid)
-			assert.WantErr(t, tt.wantErr, err, tt.errWanted)
+			err = hid.Configure(tt.Client)
 
-			err = env.Reset()
-			assert.NoErr(t, err)
+			assert.WantErr(t, tt.wantErr, err, tt.errWanted)
+			assert.Result(t, hid.Config, tt.want)
 		})
 	}
 

@@ -11,14 +11,18 @@ import (
 // replaceEnv compacts environment variables handling to increase readability of tests.
 func replaceEnv(t *testing.T, vars []string) {
 	t.Helper()
-	err := env.Clear(envars...)
+
+	err := env.Clear(testenv...)
 	assert.NoErr(t, err)
-	err = env.Set(vars...)
-	assert.NoErr(t, err)
+
+	if vars != nil {
+		err = env.Set(vars...)
+		assert.NoErr(t, err)
+	}
 }
 
-func Test_New(t *testing.T) {
-	err := env.Save(envars...)
+func TestNew(t *testing.T) {
+	err := env.Save(testenv...)
 	assert.NoErr(t, err)
 
 	tests := []struct {
@@ -31,71 +35,24 @@ func Test_New(t *testing.T) {
 			name:      "no environment variables",
 			envslice:  []string{},
 			wantErr:   true,
-			errWanted: "missing either ROLE or GITHUB_TOKEN env var",
+			errWanted: "missing env var VAULT_ADDR",
 		}, {
 			name:      "broken authentification",
-			envslice:  []string{"GITHUB_TOKEN", mock.Token},
+			envslice:  []string{envars["addr"], mock.Addr, envars["github"], mock.Token},
 			wantErr:   true,
 			errWanted: "while do-ing http request",
-		}, {
-			name:      "broken client",
-			envslice:  []string{"GITHUB_TOKEN", mock.Token, "VAULT_CACERT", mock.File},
-			wantErr:   true,
-			errWanted: "while loading CA cert from file",
-		}, {
-			name: "successful creation",
-			// default environment
-			wantErr: false,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if tt.envslice != nil {
-				replaceEnv(t, tt.envslice)
-			}
+			replaceEnv(t, tt.envslice)
 
-			vault, err := New()
+			_, err := New()
+
 			assert.WantErr(t, tt.wantErr, err, tt.errWanted)
-
-			if !tt.wantErr && vault.Token.Auth.Accessor == "" {
-				t.Error("No token recieved")
-			}
-
-			err = env.Reset()
-			assert.NoErr(t, err)
 		})
 	}
 
 	err = env.Reset()
 	assert.NoErr(t, err)
-}
-
-func Test_Vault_NewClient(t *testing.T) {
-	tests := []struct {
-		name      string
-		vault     *Vault
-		wantErr   bool
-		errWanted string
-	}{
-		{
-			name:      "pool error",
-			vault:     &Vault{Config: Config{PemCert: mock.File}},
-			wantErr:   true,
-			errWanted: "failed to read CA file",
-		}, {
-			name:    "functional pool",
-			vault:   &Vault{Config: Config{PemCert: ""}},
-			wantErr: false,
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			err := tt.vault.MakeClient()
-			assert.WantErr(t, tt.wantErr, err, tt.errWanted)
-
-			if !tt.wantErr && tt.vault.Client == nil {
-				t.Error("No http client recieved")
-			}
-		})
-	}
 }

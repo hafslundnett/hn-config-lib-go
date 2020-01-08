@@ -4,32 +4,40 @@ import (
 	"testing"
 )
 
-var somestructs = []struct {
-	id   int
-	name string
-}{
-	{24, "some"},
-	{24, "some"},
-}
-
 func Test_Result(t *testing.T) {
-	type args struct {
-		t    *testing.T
-		got  interface{}
-		want interface{}
+	somestructs := []struct {
+		id   int
+		name string
+	}{
+		{24, "some"},
+		{24, "some"},
 	}
 	tests := []struct {
 		name string
-		args args
+		got  interface{}
+		want interface{}
 	}{
-		{"string", args{t: t, got: "a", want: "a"}},
-		{"bool", args{t: t, got: true, want: true}},
-		{"int", args{t: t, got: 42, want: 42}},
-		{"struct", args{t: t, got: somestructs[0], want: somestructs[1]}},
+		{
+			name: "string",
+			got:  "a",
+			want: "a",
+		}, {
+			name: "bool",
+			got:  true,
+			want: true,
+		}, {
+			name: "int",
+			got:  42,
+			want: 42,
+		}, {
+			name: "struct",
+			got:  somestructs[0],
+			want: somestructs[1],
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			Result(tt.args.t, tt.args.got, tt.args.want)
+			Result(t, tt.got, tt.want)
 		})
 	}
 }

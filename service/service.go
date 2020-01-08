@@ -1,17 +1,31 @@
 package service
 
+import (
+	"github.com/hafslundnett/hn-config-lib-go/libhttp"
+)
+
 // Service expl
 type Service interface {
-	Configure(*Config) error
-	GetEnvars() map[string]string
-	GetAccess() error
+	Configure(libhttp.Client) error
+	ConnectToServer() error
 }
 
 // Setup expl
-func Setup(service Service) (Service, error) {
-	Configure(service, service.GetEnvars())
+func Setup(service Service, pemCert string) error {
+	client, err := libhttp.NewClient(pemCert)
+	if err != nil {
+		return err
+	}
 
-	err := service.GetAccess()
+	err = service.Configure(client)
+	if err != nil {
+		return err
+	}
 
-	return service, err
+	err = service.ConnectToServer()
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

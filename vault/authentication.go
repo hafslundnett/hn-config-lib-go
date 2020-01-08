@@ -30,8 +30,8 @@ type Auth struct {
 	Metadata      map[string]interface{} `json:"metadata"`
 }
 
-// GetAccess uses supplied login information to authenticate to Vault and get an authentification token
-func (vault Vault) GetAccess() error {
+// Authenticate uses supplied login information to authenticate to Vault and get an authentification token
+func (vault Vault) Authenticate() error {
 	req, err := authReq(vault.Config)
 	if err != nil {
 		return err

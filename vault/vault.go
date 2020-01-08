@@ -1,23 +1,31 @@
 package vault
 
-import "github.com/hafslundnett/hn-config-lib-go/libhttp"
+import (
+	"os"
+
+	"github.com/hafslundnett/hn-config-lib-go/service"
+)
+
+// SecretStorage expl
+type SecretStorage interface {
+}
 
 // Vault contains all information needed to get and interact with Vault secrets, after initial configuration.
 type Vault struct {
 	Config
-	Client *libhttp.Client
-	Token  Token
+	Token Token
 }
 
 // New initiaizes a new Vault prepares it for interacting with secrets.
 // It reads configuration information from the environment, configures a HTTP client and gets an authentification token to get secrets.
-func New() (Vault, error) {
-	service, err := Setup(Vault{})
-	return service.(Vault), err
+func New() (*Vault, error) {
+	vault := new(Vault)
+	cert := os.Getenv(envars["cert"])
+	err := service.Setup(vault, cert)
+	return vault, err
 }
 
-// MakeClient returns a http client configured according to the supplied Config, for use with Vault
-func (vault Vault) MakeClient() (err error) {
-	vault.Client, err = libhttp.NewClient(vault.Config.PemCert)
-	return
+// ConnectToServer expl
+func (vault Vault) ConnectToServer() error {
+	return vault.Authenticate()
 }
