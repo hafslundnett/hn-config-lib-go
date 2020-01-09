@@ -21,7 +21,7 @@ func replaceEnv(t *testing.T, vars []string) {
 	}
 }
 
-func TestNew(t *testing.T) {
+func Test_New(t *testing.T) {
 	err := env.Save(testenv...)
 	assert.NoErr(t, err)
 

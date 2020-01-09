@@ -20,7 +20,7 @@ func TestVault_GetSecret(t *testing.T) {
 			name:      "forbidden access",
 			vault:     Vault{Config: Config{Client: mock.ClientForbidden}},
 			wantErr:   true,
-			errWanted: "while renewing credentials",
+			errWanted: "403: forbidden",
 		}, {
 			name:    "access granted",
 			vault:   Vault{Config: Config{Client: mock.Client}},
@@ -77,7 +77,7 @@ func TestVault_do(t *testing.T) {
 			name:      "forbidden access, without authentication",
 			vault:     Vault{Config: Config{Client: mock.ClientForbidden}},
 			wantErr:   true,
-			errWanted: "while renewing credentials",
+			errWanted: "403: forbidden",
 		}, {
 			name:    "access granted",
 			vault:   Vault{Config: Config{Client: mock.Client}},

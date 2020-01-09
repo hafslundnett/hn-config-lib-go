@@ -7,21 +7,18 @@ import (
 	"github.com/pkg/errors"
 )
 
-// PublicKey expl
-type PublicKey struct {
-	KeyID     string   `json:"kid"`
-	Algorithm string   `json:"alg"`
-	X5C       []string `json:"x5c"`
+// PKS (Public Key Set) stores a slice of public keys and their metadata
+type PKS struct {
+	Keys []struct {
+		KeyID     string   `json:"kid"`
+		Algorithm string   `json:"alg"`
+		X5C       []string `json:"x5c"`
+	} `json:"keys"`
 }
 
-// PublicKeySet expl
-type PublicKeySet struct {
-	Keys []PublicKey `json:"keys"`
-}
-
-// NewPKS expl
-func (hid *HID) NewPKS() error {
-	err := hid.Client.Get(hid.JWKSuri, &hid.PKS)
+// newPKS renews the stored public key set for the external HID server
+func (hid *HID) newPKS() error {
+	err := hid.client.Get(hid.JWKSuri, &hid.PKS)
 	if err != nil {
 		return errors.Wrap(err, "while renewing HID public key set")
 	}
@@ -43,8 +40,9 @@ func keyFunc(token *jwt.Token) (interface{}, error) {
 	return jwt.ParseRSAPublicKeyFromPEM([]byte(cert))
 }
 
+// getPemCert extracts the pem certificate from a jwt token
 func getPemCert(token *jwt.Token) (cert string, err error) {
-	for _, k := range pks.Keys {
+	for _, k := range tmpPKS.Keys {
 		if kid, ok := token.Header["kid"].(string); ok {
 			if kid == k.KeyID {
 				cert = "-----BEGIN CERTIFICATE-----\n" + k.X5C[0] + "\n-----END CERTIFICATE-----"
@@ -58,11 +56,12 @@ func getPemCert(token *jwt.Token) (cert string, err error) {
 	return "", errors.New("Unable to find corresponding kid")
 }
 
-// needs to be globally accessible because of how dgrijalva/jwt-go works. Not for caching; set before each use, nil after use.
-var pks PublicKeySet
+var tmpPKS PKS // needs to be globally accessible because of how dgrijalva/jwt-go works. Not for caching; set before each use, nil after use.
 
-func provideKeys(keys []PublicKey) {
-	pks = PublicKeySet{
-		Keys: keys,
-	}
+func provideKeys(pks PKS) {
+	tmpPKS = pks
+}
+
+func revokeKeys() {
+	tmpPKS = PKS{nil}
 }

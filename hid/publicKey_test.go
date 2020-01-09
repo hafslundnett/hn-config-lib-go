@@ -7,7 +7,7 @@ import (
 	"github.com/hafslundnett/hn-config-lib-go/testing/mock"
 )
 
-func Test_HID_NewPKS(t *testing.T) {
+func Test_HID_newPKS(t *testing.T) {
 	tests := []struct {
 		name      string
 		wantErr   bool
@@ -24,7 +24,7 @@ func Test_HID_NewPKS(t *testing.T) {
 			err := hid.Configure(mock.Client)
 			assert.NoErr(t, err)
 
-			err = hid.NewPKS()
+			err = hid.newPKS()
 			assert.WantErr(t, tt.wantErr, err, tt.errWanted)
 
 			//if !tt.wantErr && hid.PKS.Keys == nil {

@@ -3,6 +3,7 @@ package vault
 import (
 	"io"
 	"net/http"
+	"time"
 
 	"github.com/pkg/errors"
 )
@@ -12,8 +13,9 @@ type Token struct {
 	RequestID     string `json:"request_id"`
 	LeaseID       string `json:"lease_id"`
 	LeaseDuration int    `json:"lease_duration"`
-	Renewable     bool   `json:"renewable"`
-	Auth          Auth   `json:"auth"`
+	CreatedAt     time.Time
+	Renewable     bool `json:"renewable"`
+	Auth          Auth `json:"auth"`
 }
 
 // Auth contains the token information for authenticating Vault requests
@@ -40,6 +42,8 @@ func (vault Vault) Authenticate() error {
 	if err := vault.Client.Do(req, &vault.Token); err != nil {
 		return errors.Wrapf(err, "while authenticating to Vault at %s", req.URL)
 	}
+
+	vault.Token.CreatedAt = time.Now()
 
 	return nil
 }

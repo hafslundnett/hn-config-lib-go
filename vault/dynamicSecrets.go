@@ -6,7 +6,7 @@ import (
 )
 
 const (
-	tenSeconds = 10 * time.Second
+	tenSecond = 10 * time.Second
 )
 
 // SecretsSubscriber implementors have are dependant on secrets (connections strings,
@@ -153,9 +153,9 @@ func (m singleSecretMaintainer) getSecret() (UpdatedSecret, bool, time.Duration,
 }
 
 func getWaitDuration(d time.Duration) time.Duration {
-	if d <= tenSeconds {
+	if d <= tenSecond {
 		return d
 	}
 
-	return d - tenSeconds
+	return d - tenSecond
 }

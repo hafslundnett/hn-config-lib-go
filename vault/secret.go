@@ -2,7 +2,6 @@ package vault
 
 import (
 	"net/http"
-	"strings"
 
 	"github.com/pkg/errors"
 )
@@ -46,6 +45,8 @@ func secretsReq(url, auth string) (*http.Request, error) {
 	return req, nil
 }
 
+/**
+
 // do performs a request to the vault and retries once if the request returns 403.
 // Before retrying, the credentials will be renewed
 // Results are unmarshaled to the destination, unless dst is an io.Writer whitch will get the raw response instead
@@ -61,4 +62,24 @@ func (vault Vault) do(req *http.Request, dst interface{}) (err error) {
 	}
 
 	return
+}
+
+// do2 performs a request to the vault and retries once if the request returns 403.
+// Before retrying, the credentials will be renewed
+// Results are unmarshaled to the destination, unless dst is an io.Writer whitch will get the raw response instead
+func (vault Vault) do2(req *http.Request, dst interface{}) error {
+	lease := time.Duration(vault.Token.LeaseDuration) * time.Second
+	if time.Since(vault.Token.CreatedAt) > lease {
+		if err := vault.Authenticate(); err != nil {
+			return errors.Wrap(err, "while renewing expired credentials")
+		}
+	}
+
+	return vault.Client.Do(req, &dst)
+}
+
+*/
+
+func (vault Vault) do(req *http.Request, dst interface{}) error {
+	return vault.Client.Do(req, &dst)
 }

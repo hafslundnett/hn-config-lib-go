@@ -7,27 +7,27 @@ import (
 	"github.com/hafslundnett/hn-config-lib-go/service"
 )
 
-// IdentityManager expl
-type IdentityManager interface {
-	AuthorizeRequest(r *http.Request, audience, scope string) error
+// IDManager is a service that is able to provide clients with authoriation tokens with the GetToken function, and is capable of authorizing these incoming tokens for the server with the AuthorizeRequest function.
+type IDManager interface {
 	GetToken(user, secret string) (token *Token, err error)
+	AuthorizeRequest(r *http.Request, audience, scope string) error
 }
 
 // HID expl
 type HID struct {
 	Config
-	PKS PublicKeySet
+	PKS
 }
 
-// New expl
-func New() (*HID, error) {
+// New creates a new HID and returns it as an IDManager
+func New() (IDManager, error) {
 	hid := new(HID)
 	cert := os.Getenv(envars["cert"])
 	err := service.Setup(hid, cert)
 	return hid, err
 }
 
-// ConnectToServer expl
+// ConnectToServer prepares HID to connect to the external server
 func (hid *HID) ConnectToServer() error {
-	return hid.NewPKS()
+	return hid.newPKS()
 }

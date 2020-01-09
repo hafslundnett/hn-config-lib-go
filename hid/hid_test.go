@@ -41,12 +41,8 @@ func Test_New(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			replaceEnv(t, tt.envslice)
 
-			hid, err := New()
+			_, err := New()
 			assert.WantErr(t, tt.wantErr, err, tt.errWanted)
-
-			if !tt.wantErr {
-				assert.Result(t, hid.JWKSuri, tt.want)
-			}
 
 			err = env.Reset()
 			assert.NoErr(t, err)

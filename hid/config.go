@@ -25,7 +25,7 @@ type Config struct {
 	JWKSuri string `json:"jwks_uri"`
 	TokenEP string `json:"token_endpoint"`
 
-	Client libhttp.Client
+	client libhttp.Client
 }
 
 // Configure expl
@@ -47,7 +47,7 @@ func (hid *HID) Configure(client libhttp.Client) error {
 	}
 
 	hid.Addr = addr
-	hid.Client = client
+	hid.client = client
 
 	return nil
 }

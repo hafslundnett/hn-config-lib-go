@@ -11,12 +11,12 @@ import (
 func (hid *HID) AuthorizeRequest(r *http.Request, audience, scope string) error {
 	rawToken := r.Header.Get("Authorization")
 
-	token, err := hid.Authenticate(rawToken)
+	token, err := hid.authenticate(rawToken)
 	if err != nil {
 		return errors.Wrap(err, "while authenticating")
 	}
 
-	err = VerifyClaims(token, hid.Addr, audience, scope)
+	err = verifyClaims(token, hid.Addr, audience, scope)
 	if err != nil {
 		return errors.Wrap(err, "while verifying claims")
 	}
@@ -24,16 +24,16 @@ func (hid *HID) AuthorizeRequest(r *http.Request, audience, scope string) error 
 	return nil
 }
 
-// Authenticate expl
-func (hid *HID) Authenticate(rawToken string) (*jwt.Token, error) {
-	provideKeys(hid.PKS.Keys)
-	defer provideKeys(nil)
+// authenticate expl
+func (hid *HID) authenticate(rawToken string) (*jwt.Token, error) {
+	provideKeys(hid.PKS)
+	defer revokeKeys()
 
 	token, err := parseToken(rawToken)
 	if err != nil {
 
 		// might fail if stored public keys are outdated. Renew keys and retry once
-		err = hid.NewPKS()
+		err = hid.newPKS()
 		if err != nil {
 			return nil, err
 		}
@@ -52,7 +52,7 @@ func (hid *HID) Authenticate(rawToken string) (*jwt.Token, error) {
 }
 
 func parseToken(rawToken string) (*jwt.Token, error) {
-	token, err := jwt.ParseWithClaims(rawToken, &Claims{}, keyFunc)
+	token, err := jwt.ParseWithClaims(rawToken, &claims{}, keyFunc)
 	if err != nil {
 		return nil, err
 	}

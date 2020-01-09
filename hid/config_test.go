@@ -22,28 +22,28 @@ func Test_HID_Configure(t *testing.T) {
 	tests := []struct {
 		name      string
 		envslice  []string
-		Client    libhttp.Client
+		client    libhttp.Client
 		want      Config
 		wantErr   bool
 		errWanted string
 	}{
 		{
 			name:      "no environment variables",
-			Client:    mock.Client,
+			client:    mock.Client,
 			want:      Config{},
 			wantErr:   true,
 			errWanted: "missing env var " + envars["addr"],
 		}, {
 			name:     "defaulting values",
 			envslice: []string{envars["addr"], mock.Addr},
-			Client:   mock.ClientForbidden,
+			client:   mock.ClientForbidden,
 			want:     Config{mock.Addr, mock.Addr + defJWKS, mock.Addr + defTokenEP, mock.ClientForbidden},
 			wantErr:  false,
 		}, {
 			name:     "with all environment variables",
 			envslice: []string{envars["addr"], mock.Addr, envars["discovery"], mock.Path},
-			Client:   mock.Client,
-			want:     Config{Addr: mock.Addr, Client: mock.Client},
+			client:   mock.Client,
+			want:     Config{Addr: mock.Addr, client: mock.Client},
 			wantErr:  false,
 		},
 	}
@@ -52,7 +52,7 @@ func Test_HID_Configure(t *testing.T) {
 			replaceEnv(t, tt.envslice)
 
 			hid := new(HID)
-			err = hid.Configure(tt.Client)
+			err = hid.Configure(tt.client)
 
 			assert.WantErr(t, tt.wantErr, err, tt.errWanted)
 			assert.Result(t, hid.Config, tt.want)

@@ -5,20 +5,20 @@ import (
 	"github.com/pkg/errors"
 )
 
-// Claims expl
-type Claims struct {
+// claims expl
+type claims struct {
 	ClientID string   `json:"client_id,omitempty"`
 	Scope    []string `json:"scope,omitempty"`
 	jwt.StandardClaims
 }
 
-// VerifyClaims expl
-func VerifyClaims(token *jwt.Token, issuer, audience, scope string) error {
-	if !token.Claims.(*Claims).VerifyAudience(audience, false) {
+// verifyClaims expl
+func verifyClaims(token *jwt.Token, issuer, audience, scope string) error {
+	if !token.Claims.(*claims).VerifyAudience(audience, false) {
 		return errors.New("Invalid audience")
 	}
 
-	if !token.Claims.(*Claims).VerifyIssuer(issuer, false) {
+	if !token.Claims.(*claims).VerifyIssuer(issuer, false) {
 		return errors.New("Invalid issuer")
 	}
 
@@ -26,7 +26,7 @@ func VerifyClaims(token *jwt.Token, issuer, audience, scope string) error {
 }
 
 func verifyScope(token *jwt.Token, scope string) error {
-	if claims, ok := token.Claims.(*Claims); ok {
+	if claims, ok := token.Claims.(*claims); ok {
 		for _, s := range claims.Scope {
 			if s == scope {
 				return nil // scope found, verified scope
