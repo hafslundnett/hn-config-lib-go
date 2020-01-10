@@ -16,7 +16,7 @@ var envars = map[string]string{
 	"role":    "ROLE",
 }
 
-// Config contains the configuration information needed to do the initial setup of a Vault connection
+// Config contains the configuration information needed to do the initial setup and renewal of a Vault service
 type Config struct {
 	Addr          string
 	GithubToken   string

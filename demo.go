@@ -3,12 +3,15 @@ package lib
 import (
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/hafslundnett/hn-config-lib-go/hid"
 	"github.com/hafslundnett/hn-config-lib-go/vault"
 )
 
-func demo() {
+// demo is a runnable version of the example_test.go that requires appropriate env vars to be set before executing. See readme for documentation on these.
+// func main() { // <- Uncomment to run
+func demo() { //    <- Comment to run
 	vaultDemo()
 
 	myRequest := hidClientDemo()
@@ -24,13 +27,13 @@ func vaultDemo() {
 	}
 
 	// Get a secret from the vault
-	mySecret, err := myVault.GetSecret("path/to/secret")
+	mySecret, err := myVault.GetSecret(os.Getenv("TEST_SECRET"))
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	// Do something with the secret
-	log.Println(mySecret)
+	log.Println(mySecret.RequestID)
 }
 
 func hidClientDemo() *http.Request {
@@ -41,19 +44,19 @@ func hidClientDemo() *http.Request {
 	}
 
 	// Get a bearer token from HID
-	myToken, err := myHID.GetToken("username", "secret")
+	myToken, err := myHID.GetToken(os.Getenv("TEST_HID_ID"), os.Getenv("TEST_HID_SECRET"))
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	// Make request struct as usual
-	myRequest, err := http.NewRequest("POST", "api.url", nil)
+	// Make http.Request as usual
+	myRequest, err := http.NewRequest("", "api.url", nil)
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	// Add bearer token to http request header
-	myRequest.Header.Add("Authorization", myToken.Raw)
+	myToken.AppendToRequest(myRequest)
 
 	// Send token to API with requests
 	return myRequest
@@ -67,7 +70,7 @@ func hidAPIdemo(myRequest *http.Request) {
 	}
 
 	// Verify if token is valid. Invalid token throws an error
-	err = myHID.AuthorizeRequest(myRequest, "audience", "scope")
+	err = myHID.AuthorizeRequest(myRequest, os.Getenv("TEST_AUDIENCE"), os.Getenv("TEST_SCOPE"))
 	if err != nil {
 		log.Fatal("Token is invalid")
 	}

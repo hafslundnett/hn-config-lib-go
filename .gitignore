@@ -1,6 +1,8 @@
+.vs/*
 .vscode/*
-debug
 .idea/*
-gcp_serviceaccount.json
-creds-*.json
+
+debug
+debug.test
+
 *.bat

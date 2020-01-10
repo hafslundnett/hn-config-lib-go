@@ -7,7 +7,8 @@ import (
 	"github.com/pkg/errors"
 )
 
-// AuthorizeRequest token
+// AuthorizeRequest takes an incoming request on behalf of the service and extracts the token from the "Authorization" header.
+// The token is then checked for authenticity, and then the claims of thet token is verified against the provided scope and audince.
 func (hid *HID) AuthorizeRequest(r *http.Request, audience, scope string) error {
 	rawToken := r.Header.Get("Authorization")
 
@@ -24,7 +25,7 @@ func (hid *HID) AuthorizeRequest(r *http.Request, audience, scope string) error 
 	return nil
 }
 
-// authenticate expl
+// authenticate verifies the authenticity of a provided raw token
 func (hid *HID) authenticate(rawToken string) (*jwt.Token, error) {
 	provideKeys(hid.PKS)
 	defer revokeKeys()

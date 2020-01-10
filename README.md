@@ -1,8 +1,12 @@
 # HN Config Lib GO  
   
-GO-implementation of Vault, HID and additional related helper libraries for HafslundNett  
+GO-implementation of Hashicorp Vault, HID and additional related helper libraries for HafslundNett  
   
 UNDER DEVELOPMENT
+
+## Examples  
+
+example_test.go
 
 Examples:  
 Make sure environment variables are set before running.  
@@ -36,3 +40,7 @@ func main() {
     log.Println(mySecret)
 }
 ```
+  
+## License  
+  
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details  

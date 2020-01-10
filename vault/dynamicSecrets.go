@@ -121,13 +121,13 @@ func (m singleSecretMaintainer) getSecret() (UpdatedSecret, bool, time.Duration,
 	renewable := false
 
 	secret, err := m.v.GetSecret(m.path)
-	if secret.Renewable {
-		renewable = true
-		ttl = time.Duration(secret.LeaseDuration) * time.Millisecond
-	}
 	if err != nil {
 		log.Printf("Error while getting secret %s :: %v", m.path, err)
 		return UpdatedSecret{}, false, time.Second * 0, err
+	}
+	if secret.Renewable {
+		renewable = true
+		ttl = time.Duration(secret.LeaseDuration) * time.Millisecond
 	}
 
 	secrets := map[string]*Secret{m.path: secret}

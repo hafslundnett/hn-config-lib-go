@@ -28,7 +28,7 @@ func (hid HID) GetToken(user, secret string) (token *Token, err error) {
 	return
 }
 
-// AppendTokenToRequest is a simple quality of life function that appends the raw token to the header of the provided request.
-func (hid HID) AppendTokenToRequest(req *http.Request, token Token) {
+// AppendToRequest is a simple quality of life function that appends the raw token to the header of the provided request.
+func (token Token) AppendToRequest(req *http.Request) {
 	req.Header.Add("Authorization", token.Raw)
 }

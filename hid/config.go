@@ -19,7 +19,7 @@ var envars = map[string]string{
 	"discovery": "HID_DISCOVERY",
 }
 
-// Config expl
+// Config contains the configuration information needed to do the initial setup and renewal of the HID service
 type Config struct {
 	Addr    string
 	JWKSuri string `json:"jwks_uri"`

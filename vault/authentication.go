@@ -13,9 +13,9 @@ type Token struct {
 	RequestID     string `json:"request_id"`
 	LeaseID       string `json:"lease_id"`
 	LeaseDuration int    `json:"lease_duration"`
+	Renewable     bool   `json:"renewable"`
+	Auth          Auth   `json:"auth"`
 	CreatedAt     time.Time
-	Renewable     bool `json:"renewable"`
-	Auth          Auth `json:"auth"`
 }
 
 // Auth contains the token information for authenticating Vault requests
@@ -33,7 +33,7 @@ type Auth struct {
 }
 
 // Authenticate uses supplied login information to authenticate to Vault and get an authentification token
-func (vault Vault) Authenticate() error {
+func (vault *Vault) Authenticate() error {
 	req, err := authReq(vault.Config)
 	if err != nil {
 		return err

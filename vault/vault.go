@@ -6,7 +6,7 @@ import (
 	"github.com/hafslundnett/hn-config-lib-go/service"
 )
 
-// SecretsManager expl
+// SecretsManager represents a service that is able to provide clients with a secret stored at a privded path.
 type SecretsManager interface {
 	GetSecret(path string) (*Secret, error)
 }
@@ -26,7 +26,7 @@ func New() (SecretsManager, error) {
 	return vault, err
 }
 
-// ConnectToServer expl
-func (vault Vault) ConnectToServer() error {
+// ConnectToServer performs neccessary setup for connections to the external HID service
+func (vault *Vault) ConnectToServer() error {
 	return vault.Authenticate()
 }
