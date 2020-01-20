@@ -11,7 +11,7 @@ import (
 
 // BigQueryService expl
 type BigQueryService struct {
-	client *bigquery.Client
+	Client *bigquery.Client
 }
 
 // NewBQ expl
@@ -30,7 +30,7 @@ func NewBQ(ctx context.Context, credPath string) (*BigQueryService, error) {
 }
 
 // DoQuery expl
-func (qs *BigQueryService) DoQuery(ctx context.Context, query bigquery.Query, outChan chan<- []bigquery.Value, doneChan chan<- bool) error {
+func (*BigQueryService) DoQuery(ctx context.Context, query bigquery.Query, outChan chan<- []bigquery.Value, doneChan chan<- bool) error {
 	it, err := query.Read(ctx)
 	if err != nil {
 		return errors.Wrap(err, "While querying BigQuery")
@@ -53,7 +53,7 @@ func (qs *BigQueryService) DoQuery(ctx context.Context, query bigquery.Query, ou
 }
 
 // GetQuota expl
-func (qs *BigQueryService) GetQuota(ctx context.Context, query bigquery.Query) (bytes int64, err error) {
+func (*BigQueryService) GetQuota(ctx context.Context, query bigquery.Query) (bytes int64, err error) {
 	query.DryRun = true
 	query.Location = "EU"
 
@@ -71,6 +71,6 @@ func (qs *BigQueryService) GetQuota(ctx context.Context, query bigquery.Query) (
 }
 
 // MakeSQLquery expl
-func (qs *BigQueryService) MakeSQLquery(query string) *bigquery.Query {
-	return qs.client.Query(query)
+func (bq *BigQueryService) MakeSQLquery(query string) *bigquery.Query {
+	return bq.Client.Query(query)
 }

@@ -11,7 +11,7 @@ import (
 
 // DatastoreService expl
 type DatastoreService struct {
-	*datastore.Client
+	Client *datastore.Client
 }
 
 // NewDS expl
@@ -31,7 +31,7 @@ func NewDS(ctx context.Context, credPath string) (*DatastoreService, error) {
 
 // DoQuery expl
 func (ds *DatastoreService) DoQuery(ctx context.Context, query datastore.Query, outChan chan<- map[datastore.Key]interface{}, doneChan chan<- bool) error {
-	it := ds.Run(ctx, &query)
+	it := ds.Client.Run(ctx, &query)
 
 	for {
 		var entry []interface{}
@@ -50,7 +50,7 @@ func (ds *DatastoreService) DoQuery(ctx context.Context, query datastore.Query, 
 }
 
 // MakeGQLquery expl
-func (ds *DatastoreService) MakeGQLquery(kind string, args map[string]interface{}) *datastore.Query {
+func (*DatastoreService) MakeGQLquery(kind string, args map[string]interface{}) *datastore.Query {
 	query := datastore.NewQuery(kind)
 	for arg, value := range args {
 		if arg == "Limit" {
