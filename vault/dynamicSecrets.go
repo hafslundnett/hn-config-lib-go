@@ -47,14 +47,14 @@ func (us UpdatedSecret) GetAllData() map[string]string {
 }
 
 // RegisterDynamicSecretDependency by registering
-func RegisterDynamicSecretDependency(dep SecretsSubscriber, vlt *Vault, dc chan<- bool) {
+func RegisterDynamicSecretDependency(dep SecretsSubscriber, v SecretsManager, dc chan<- bool) {
 	spec := dep.GetSubscriptionSpec()
 	maintainers := []singleSecretMaintainer{}
 	for _, path := range spec.Paths {
 		maintainer := singleSecretMaintainer{
 			path:         path,
 			callbackChan: spec.CallbackChan,
-			v:            vlt,
+			v:            v,
 			doneChan:     dc,
 		}
 
