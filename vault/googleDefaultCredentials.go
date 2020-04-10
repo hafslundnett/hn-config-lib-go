@@ -32,7 +32,7 @@ func (vault *Vault) setDefaultGoogleCreds(path, key string, saver fileTextSaver)
 	if err != nil {
 		return err
 	}
-	fn := getRandomFileName("google_creds", ".json")
+	fn := getRandomFileName("google_creds", "json")
 	err = saver(fn, decoded)
 	if err != nil {
 		return err
