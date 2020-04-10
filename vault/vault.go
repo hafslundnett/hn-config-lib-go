@@ -9,6 +9,7 @@ import (
 // SecretsManager represents a service that is able to provide clients with a secret stored at a privded path.
 type SecretsManager interface {
 	GetSecret(path string) (*Secret, error)
+	SetDefaultGoogleCredentials(path, key string) error
 }
 
 // Vault contains all information needed to get and interact with Vault secrets, after initial configuration.
