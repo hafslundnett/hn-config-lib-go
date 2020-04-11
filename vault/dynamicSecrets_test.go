@@ -121,3 +121,8 @@ func (m *mockSecretGetter) GetSecret(path string) (*Secret, error) {
 	m.returnSecrets = rs
 	return s, nil
 }
+
+func (m *mockSecretGetter) SetDefaultGoogleCredentials(path, key string) error {
+	return nil
+}
+

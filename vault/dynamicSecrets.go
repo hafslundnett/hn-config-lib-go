@@ -133,14 +133,14 @@ func (m singleSecretMaintainer) getSecret() (UpdatedSecret, bool, time.Duration,
 	secrets := map[string]*Secret{m.path: secret}
 	if sp, ok := secret.Data["secret-path"]; ok {
 		innerSecret, err := m.v.GetSecret(sp)
-		if err == nil {
+		if err == nil && innerSecret != nil {
 			secrets[sp] = innerSecret
-		}
-		if innerSecret.Renewable {
-			renewable = true
-			ttl2 := time.Duration(innerSecret.LeaseDuration) * time.Millisecond
-			if ttl2 < ttl {
-				ttl = ttl2
+			if innerSecret.Renewable {
+				renewable = true
+				ttl2 := time.Duration(innerSecret.LeaseDuration) * time.Millisecond
+				if ttl2 < ttl {
+					ttl = ttl2
+				}
 			}
 		}
 	}
